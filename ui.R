@@ -12,7 +12,10 @@ ui <- fluidPage(
       selectInput(inputId = "minc_file",
                   label = "Minc File",
                   choices = df$nlin_file,
-                  selected = df$nlin_file[1])
+                  selected = df$nlin_file[1]),
+
+      uiOutput("overlay_levels")
+
     ),
 
     mainPanel(
