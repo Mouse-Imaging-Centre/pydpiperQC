@@ -6,8 +6,8 @@ ui <- fluidPage(
 
       sliderInput(inputId = "consensus_levels",
                   label = "Consensus Levels",
-                  min = 0, max = max(consensus),
-                  value = c(0, max(consensus))),
+                  min = 0, max = round(max(consensus)),
+                  value = c(0, round(max(consensus)))),
 
       selectInput(inputId = "minc_file",
                   label = "Minc File",
