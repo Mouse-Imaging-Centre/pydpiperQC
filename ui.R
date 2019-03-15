@@ -17,7 +17,7 @@ ui <- fluidPage(
         h3("Comparate"),
         selectInput(inputId = "comparate_file",
                     label = "Comparate File",
-                    choices = df$nlin_file,
+                    choices = setNames(df$nlin_file, basename(df$nlin_file)),
                     selected = df$nlin_file[1]),
 
         #sliderInput
