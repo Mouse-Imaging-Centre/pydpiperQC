@@ -12,12 +12,12 @@ library(grid)
 consensus <- "/hpf/largeprojects/MICe/nwang/collaborator_40um/Sibille_stress2/Sibille_stress2_nlin/Sibille_stress2-nlin-3.mnc" %>%
   mincGetVolume() %>%
   mincArray()
-low <- consensus %>% range() %>% .[1]
-high <- consensus %>% range() %>% .[2]
-dim <- dim(consensus)
-consensus_mask <- "/hpf/largeprojects/MICe/nwang/collaborator_40um/Sibille_stress2/Sibille_stress2_nlin/Sibille_stress2-nlin-3_mask.mnc" %>%
-  mincGetVolume() %>%
-  mincArray()
+
+consensus_histogram <- consensus %>%
+  as.vector() %>%
+  as_tibble() %>%
+  ggplot() +
+  geom_histogram(aes(value), breaks = seq(0, max(consensus),40))
 
 df <- read_csv("/hpf/largeprojects/MICe/nwang/collaborator_40um/Sibille_stress2/analysis.csv") %>%
   mutate(nlin_file = file.path("/hpf/largeprojects/MICe/nwang/collaborator_40um/Sibille_stress2", nlin_file)) %>%
