@@ -23,6 +23,3 @@ df <- read_csv("/hpf/largeprojects/MICe/nwang/collaborator_40um/Sibille_stress2/
   mutate(nlin_file = file.path("/hpf/largeprojects/MICe/nwang/collaborator_40um/Sibille_stress2", nlin_file)) %>%
   filter(fwhm == 0.2) %>%
   .[1:10,]
-
-
-first <- mincArray(mincGetVolume(df$nlin_file[1]))
