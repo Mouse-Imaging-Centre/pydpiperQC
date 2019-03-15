@@ -10,7 +10,8 @@ ui <- fluidPage(
                     label = "Intensity Range",
                     min = 0, max = round(max(consensus)),
                     value = c(0, round(max(consensus)))),
-        hr()),
+        hr()
+        ),
 
       wellPanel(
         h3("Comparate"),
@@ -21,7 +22,9 @@ ui <- fluidPage(
 
         #sliderInput
         uiOutput("comparate_range_slider"),
-        hr())
+        hr(),
+        uiOutput("comparate_contour_slider")
+        )
     ),
 
     mainPanel(
