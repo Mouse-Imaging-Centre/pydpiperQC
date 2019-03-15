@@ -1,6 +1,16 @@
 server <- function(input, output) {
 
-  #TODO make this default properly
+  output$consensus_histogram <-renderPlot({
+    consensus %>%
+    as.vector() %>%
+    as_tibble() %>%
+    ggplot() +
+    geom_histogram(aes(value), breaks = seq(0, max(consensus),40)) +
+    theme(axis.text.y = element_blank()) +
+    xlab(NULL) +
+    ylab(NULL)
+  })
+
   comparate <- reactive({
     input$comparate_file %>% mincGetVolume() %>% mincArray()
   })

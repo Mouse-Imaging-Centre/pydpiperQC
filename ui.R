@@ -10,7 +10,7 @@ ui <- fluidPage(
                     label = "Intensity Range",
                     min = 0, max = round(max(consensus)),
                     value = c(0, round(max(consensus)))),
-        hr()
+        plotOutput("consensus_histogram", height="200px")
         ),
 
       wellPanel(
@@ -23,7 +23,6 @@ ui <- fluidPage(
 
         #sliderInput
         uiOutput("comparate_range_slider"),
-        hr(),
         uiOutput("comparate_contour_slider")
         )
     ),
