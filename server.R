@@ -1,14 +1,15 @@
 server <- function(input, output) {
 
   output$consensus_histogram <-renderPlot({
-    consensus %>%
-    as.vector() %>%
-    as_tibble() %>%
-    ggplot() +
-    geom_histogram(aes(value), breaks = seq(0, max(consensus),40)) +
-    theme(axis.text.y = element_blank()) +
-    xlab(NULL) +
-    ylab(NULL)
+    if (input$show_consensus_histogram) {
+      consensus %>%
+        as.vector() %>%
+        as_tibble() %>%
+        ggplot() +
+        geom_histogram(aes(value), breaks = seq(0, max(consensus),40)) +
+        theme(axis.text.y = element_blank()) +
+        xlab(NULL) +
+        ylab(NULL)}
   })
 
   comparate <- reactive({

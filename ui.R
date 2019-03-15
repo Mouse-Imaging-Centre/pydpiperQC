@@ -2,7 +2,7 @@ ui <- fluidPage(
   titlePanel("Pydpiper Quality Check"),
   sidebarLayout(
 
-    sidebarPanel(
+    sidebarPanel(width=5,
 
       wellPanel(
         h3("Consensus"),
@@ -10,6 +10,9 @@ ui <- fluidPage(
                     label = "Intensity Range",
                     min = 0, max = round(max(consensus)),
                     value = c(0, round(max(consensus)))),
+        checkboxInput(inputId = "show_consensus_histogram",
+                      label = "Show Consensus Histogram",
+                      value = FALSE),
         plotOutput("consensus_histogram", height="200px")
         ),
 
@@ -27,7 +30,7 @@ ui <- fluidPage(
         )
     ),
 
-    mainPanel(
+    mainPanel(width=7,
       imageOutput(outputId = "overlay")
     )
   )
