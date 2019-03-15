@@ -4,18 +4,24 @@ ui <- fluidPage(
 
     sidebarPanel(
 
-      sliderInput(inputId = "consensus_levels",
-                  label = "Consensus Levels",
-                  min = 0, max = round(max(consensus)),
-                  value = c(0, round(max(consensus)))),
+      wellPanel(
+        h3("Consensus"),
+        sliderInput(inputId = "consensus_range",
+                    label = "Intensity Range",
+                    min = 0, max = round(max(consensus)),
+                    value = c(0, round(max(consensus)))),
+        hr()),
 
-      selectInput(inputId = "minc_file",
-                  label = "Minc File",
-                  choices = df$nlin_file,
-                  selected = df$nlin_file[1]),
+      wellPanel(
+        h3("Comparate"),
+        selectInput(inputId = "comparate_file",
+                    label = "Comparate File",
+                    choices = df$nlin_file,
+                    selected = df$nlin_file[1]),
 
-      uiOutput("overlay_levels")
-
+        #sliderInput
+        uiOutput("comparate_range_slider"),
+        hr())
     ),
 
     mainPanel(
