@@ -30,6 +30,18 @@ server <- function(input, output) {
                 value = max(comparate())/2)
   })
 
+  output$comparate_histogram <-renderPlot({
+    if (input$show_comparate_histogram) {
+      comparate() %>%
+        as.vector() %>%
+        as_tibble() %>%
+        ggplot() +
+        geom_histogram(aes(value), breaks = seq(0, max(comparate()),40)) +
+        theme(axis.text.y = element_blank()) +
+        xlab(NULL) +
+        ylab(NULL)}
+  })
+
   output$overlay <- renderPlot({
     sliceSeries(nrow=4, ncol=1, begin=100, end=300) %>%
       anatomy(consensus,

@@ -13,7 +13,7 @@ ui <- fluidPage(
         checkboxInput(inputId = "show_consensus_histogram",
                       label = "Show Consensus Histogram",
                       value = FALSE),
-        plotOutput("consensus_histogram", height="200px")
+        plotOutput("consensus_histogram", height="150px")
         ),
 
       wellPanel(
@@ -26,7 +26,11 @@ ui <- fluidPage(
 
         #sliderInput
         uiOutput("comparate_range_slider"),
-        uiOutput("comparate_contour_slider")
+        uiOutput("comparate_contour_slider"),
+        checkboxInput(inputId = "show_comparate_histogram",
+                      label = "Show Comparate Histogram",
+                      value = FALSE),
+        plotOutput("comparate_histogram", height="150px")
         )
     ),
 
