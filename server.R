@@ -42,6 +42,10 @@ server <- function(input, output) {
         ylab(NULL)}
   })
 
+  comparate_contours <- reactive({
+    input$comparate_file %>% mincGetVolume() %>% mincArray()
+  })
+
   output$overlay <- renderPlot({
     sliceSeries(nrow=4, ncol=1, begin=100, end=300) %>%
       anatomy(consensus,
@@ -50,6 +54,9 @@ server <- function(input, output) {
       contours(comparate(),
                levels = input$comparate_contour_level,
                col="red") %>%
+      # anatomySliceIndicator(consensus,
+      #                       low = input$consensus_range[1],
+      #                       high = input$consensus_range[2]) %>%
       addtitle("Consensus") %>%
       ####
       sliceSeries(nrow=4, ncol=1, begin=100, end=300) %>%
