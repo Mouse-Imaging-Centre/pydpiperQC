@@ -21,7 +21,8 @@ ui <- fluidPage(
   ),
 
   column(width=8,
-    imageOutput(outputId = "overlay")
+    imageOutput(outputId = "overlay",
+                height = "800px")
   ),
 
   column(width=2,
