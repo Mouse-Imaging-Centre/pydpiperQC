@@ -1,5 +1,10 @@
 server <- function(input, output) {
 
+  df <- reactive({
+    req(input$annotation)
+    read_csv(input$annotation$datapath)
+  })
+
   output$consensus_histogram <-renderPlot({
     if (input$show_consensus_histogram) {
       consensus %>%
@@ -13,7 +18,16 @@ server <- function(input, output) {
   })
 
   comparate <- reactive({
+    req(input$comparate_file)
     input$comparate_file %>% mincGetVolume() %>% mincArray()
+  })
+
+  output$comparate_file_dropdown <- renderUI({
+    selectInput(inputId = "comparate_file",
+                label = NULL,
+                choices = setNames(df()$nlin_file,
+                                   basename(df()$nlin_file)),
+                selected = df()$nlin_file[1])
   })
 
   output$comparate_range_slider <- renderUI({
@@ -30,7 +44,7 @@ server <- function(input, output) {
                 value = max(comparate())/2)
   })
 
-  output$comparate_histogram <-renderPlot({
+  output$comparate_histogram <- renderPlot({
     if (input$show_comparate_histogram) {
       comparate() %>%
         as.vector() %>%
