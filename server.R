@@ -5,15 +5,16 @@ server <- function(input, output) {
     read_csv(input$input_csv$datapath)
   })
 
-  df <- reactive({
-    tibble(
-      nlin_file = input$comparate_file,
-      comparate_range1 = input$comparate_range[1],
-      comparate_range2 = input$comparate_range[2],
-      contour_level = input$comparate_contour_level
-    )
-  })
-  output$df <-renderTable({df()})
+  #for debugging
+  # df <- reactive({
+  #   tibble(
+  #     nlin_file = input$comparate_file,
+  #     comparate_range1 = input$comparate_range[1],
+  #     comparate_range2 = input$comparate_range[2],
+  #     contour_level = input$comparate_contour_level
+  #   )
+  # })
+  # output$df <-renderTable({df()})
 
   output$consensus_histogram <-renderPlot({
     if (input$show_consensus_histogram) {
@@ -66,11 +67,11 @@ server <- function(input, output) {
         ylab(NULL)}
   })
 
-  comparate_contours <- reactive({
-    input$comparate_file %>% mincGetVolume() %>% mincArray()
-  })
+  output$plot <- renderPlot({
+    req(input$consensus_range,
+        input$comparate_range,
+        input$comparate_contour_level)
 
-  output$overlay <- renderPlot({
     sliceSeries(nrow=4, ncol=1, begin=100, end=300) %>%
       anatomy(consensus,
               low = input$consensus_range[1],
