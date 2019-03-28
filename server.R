@@ -1,9 +1,19 @@
 server <- function(input, output) {
 
-  df <- reactive({
-    req(input$annotation)
-    read_csv(input$annotation$datapath)
+  input_csv <- reactive({
+    req(input$input_csv)
+    read_csv(input$input_csv$datapath)
   })
+
+  df <- reactive({
+    tibble(
+      nlin_file = input$comparate_file,
+      comparate_range1 = input$comparate_range[1],
+      comparate_range2 = input$comparate_range[2],
+      contour_level = input$comparate_contour_level
+    )
+  })
+  output$df <-renderTable({df()})
 
   output$consensus_histogram <-renderPlot({
     if (input$show_consensus_histogram) {
@@ -25,9 +35,9 @@ server <- function(input, output) {
   output$comparate_file_dropdown <- renderUI({
     selectInput(inputId = "comparate_file",
                 label = NULL,
-                choices = setNames(df()$nlin_file,
-                                   basename(df()$nlin_file)),
-                selected = df()$nlin_file[1])
+                choices = setNames(input_csv()$nlin_file,
+                                   basename(input_csv()$nlin_file)),
+                selected = input_csv()$nlin_file[1])
   })
 
   output$comparate_range_slider <- renderUI({

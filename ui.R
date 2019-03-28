@@ -3,7 +3,7 @@ ui <- fluidPage(
 
   column(width=2,
          fluidRow(
-           fileInput("annotation", "Upload previous annotation")
+           fileInput("input_csv", "Upload previous annotation")
          ),
 
          fluidRow(
@@ -35,4 +35,5 @@ ui <- fluidPage(
                        value = FALSE),
          plotOutput("comparate_histogram", height="150px")
   )
+  # ,fluidRow(tableOutput("df"))
 )
