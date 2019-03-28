@@ -1,20 +1,17 @@
 server <- function(input, output) {
 
-  input_csv <- reactive({
-    req(input$input_csv)
-    read_csv(input$input_csv$datapath)
+  values <- reactiveValues(df = NULL)
+
+  observeEvent(input$input_csv, {
+    values$df <- read_csv(input$input_csv$datapath)
+    if ( !("notes" %in% colnames(values$df)))
+      values$df$notes <- NA
+    if ( !("rating" %in% colnames(values$df)))
+      values$df$rating<- NA
   })
 
   #for debugging
-  # df <- reactive({
-  #   tibble(
-  #     nlin_file = input$comparate_file,
-  #     comparate_range1 = input$comparate_range[1],
-  #     comparate_range2 = input$comparate_range[2],
-  #     contour_level = input$comparate_contour_level
-  #   )
-  # })
-  # output$df <-renderTable({df()})
+  # output$df <-renderTable({values$df})
 
   output$consensus_histogram <-renderPlot({
     if (input$show_consensus_histogram) {
@@ -34,11 +31,12 @@ server <- function(input, output) {
   })
 
   output$comparate_file_dropdown <- renderUI({
+    req(values$df)
     selectInput(inputId = "comparate_file",
                 label = NULL,
-                choices = setNames(input_csv()$nlin_file,
-                                   basename(input_csv()$nlin_file)),
-                selected = input_csv()$nlin_file[1])
+                choices = setNames(values$df$nlin_file,
+                                   basename(values$df$nlin_file)),
+                selected = values$df$nlin_file[1])
   })
 
   output$comparate_range_slider <- renderUI({
