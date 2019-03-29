@@ -28,7 +28,9 @@ ui <- fluidPage(
   column(width=2,
          h3("Comparate"),
          uiOutput("comparate_file_dropdown"),
-         # numericInput("comparate_rating"),
+         numericInput("comparate_rating",
+                      label = "Comparate Rating",
+                      value = 0, min = 0, max = 5, step = 1),
          uiOutput("comparate_range_slider"),
          uiOutput("comparate_contour_slider"),
          checkboxInput(inputId = "show_comparate_histogram",
@@ -36,5 +38,5 @@ ui <- fluidPage(
                        value = FALSE),
          plotOutput("comparate_histogram", height="150px")
   )
-  # ,fluidRow(tableOutput("df"))
+  ,fluidRow(tableOutput("df"))
 )

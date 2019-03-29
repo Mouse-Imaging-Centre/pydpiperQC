@@ -1,17 +1,26 @@
 server <- function(input, output) {
 
-  values <- reactiveValues(df = NULL)
+  values <- reactiveValues()
 
   observeEvent(input$input_csv, {
     values$df <- read_csv(input$input_csv$datapath)
+
+    #if first time, csv will not have these columns initialized.
     if ( !("notes" %in% colnames(values$df)))
       values$df$notes <- NA
     if ( !("rating" %in% colnames(values$df)))
       values$df$rating<- NA
   })
 
-  #for debugging
-  # output$df <-renderTable({values$df})
+  observeEvent(input$comparate_rating, {
+    req(values$df)
+    values$df[df_row(), "rating"] <- input$comparate_rating
+  })
+
+  output$df <-renderTable({
+    req(values$df)
+    values$df %>% select(nlin_file, rating)
+  })
 
   output$consensus_histogram <-renderPlot({
     if (input$show_consensus_histogram) {
@@ -25,18 +34,22 @@ server <- function(input, output) {
         ylab(NULL)}
   })
 
-  comparate <- reactive({
-    req(input$comparate_file)
-    input$comparate_file %>% mincGetVolume() %>% mincArray()
-  })
-
   output$comparate_file_dropdown <- renderUI({
-    req(values$df)
+    req(values$df$nlin_file)
     selectInput(inputId = "comparate_file",
                 label = NULL,
                 choices = setNames(values$df$nlin_file,
                                    basename(values$df$nlin_file)),
                 selected = values$df$nlin_file[1])
+  })
+
+  df_row <- reactive({
+    which(values$df$nlin_file == input$comparate_file)
+  })
+
+  comparate <- reactive({
+    req(df_row())
+    values$df$nlin_file[as.integer(df_row())] %>% mincGetVolume() %>% mincArray()
   })
 
   output$comparate_range_slider <- renderUI({
