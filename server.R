@@ -4,10 +4,14 @@ server <- function(input, output) {
 
   observeEvent(input$input_csv, {
     df <- read_csv(input$input_csv$datapath)
-    values$nlin_file <- df$nlin_file
 
-    if (is.null(values$rating)) values$rating <- rep(0,length(values$nlin_file))
-    if (is.null(values$note)) values$note <- rep(" ",length(values$nlin_file))
+    values$nlin_file <- df$nlin_file
+    length <- length(df$nlin_file)
+
+    maybe_initialize <- function(col) {
+      if (is.null(values[[col]])) values[[col]] <- rep(" ", length)
+    }
+    walk(c("rating", "note"), maybe_initialize)
   })
 
   observeEvent(input$comparate_rating, {
