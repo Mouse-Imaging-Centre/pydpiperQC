@@ -60,8 +60,7 @@ server <- function(input, output) {
 
   comparate <- reactive({
     req(df_row())
-    #TODO
-    values$nlin_file[df_row()] %>% mincGetVolume() %>% mincArray()
+    input$comparate_file %>% mincGetVolume() %>% mincArray()
   })
 
   output$comparate_rating_voter <- renderUI({
