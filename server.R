@@ -6,10 +6,10 @@ server <- function(input, output) {
     values$df <- read_csv(input$input_csv$datapath)
 
     #if first time, csv will not have these columns initialized.
-    if ( !("notes" %in% colnames(values$df)))
-      values$df$notes <- NA
     if ( !("rating" %in% colnames(values$df)))
       values$df$rating<- NA
+    if ( !("note" %in% colnames(values$df)))
+      values$df$note <- NA
   })
 
   observeEvent(input$comparate_rating, {
@@ -17,9 +17,16 @@ server <- function(input, output) {
     values$df[df_row(), "rating"] <- input$comparate_rating
   })
 
+  observeEvent(input$comparate_note, {
+    req(values$df)
+    values$df[df_row(), "note"] <- input$comparate_note
+  })
+
   output$df <-renderTable({
     req(values$df)
-    values$df %>% select(nlin_file, rating)
+    values$df %>%
+      mutate(nlin_file = basename(nlin_file)) %>%
+      select(nlin_file, rating, note)
   })
 
   output$consensus_histogram <-renderPlot({
@@ -57,6 +64,12 @@ server <- function(input, output) {
                  label = "Rating",
                  value = values$df$rating[df_row()],
                  min = 0, max = 5, step = 1)
+  })
+
+  output$comparate_note_entry <- renderUI({
+    textInput(inputId = "comparate_note",
+              label = "Note",
+              value = values$df$note[df_row()])
   })
 
   output$comparate_range_slider <- renderUI({

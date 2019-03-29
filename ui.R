@@ -29,6 +29,7 @@ ui <- fluidPage(
          h3("Comparate"),
          uiOutput("comparate_file_dropdown"),
          uiOutput("comparate_rating_voter"),
+         uiOutput("comparate_note_entry"),
          uiOutput("comparate_range_slider"),
          uiOutput("comparate_contour_slider"),
          checkboxInput(inputId = "show_comparate_histogram",
