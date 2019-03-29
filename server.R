@@ -35,7 +35,7 @@ server <- function(input, output) {
   })
 
   output$comparate_file_dropdown <- renderUI({
-    req(values$df$nlin_file)
+    req(values$df)
     selectInput(inputId = "comparate_file",
                 label = NULL,
                 choices = setNames(values$df$nlin_file,
@@ -49,7 +49,14 @@ server <- function(input, output) {
 
   comparate <- reactive({
     req(df_row())
-    values$df$nlin_file[as.integer(df_row())] %>% mincGetVolume() %>% mincArray()
+    values$df$nlin_file[df_row()] %>% mincGetVolume() %>% mincArray()
+  })
+
+  output$comparate_rating_voter <- renderUI({
+    numericInput(inputId = "comparate_rating",
+                 label = "Rating",
+                 value = values$df$rating[df_row()],
+                 min = 0, max = 5, step = 1)
   })
 
   output$comparate_range_slider <- renderUI({
