@@ -7,7 +7,7 @@ server <- function(input, output) {
     values$nlin_file <- df$nlin_file
 
     if (is.null(values$rating)) values$rating <- rep(0,length(values$nlin_file))
-    if (is.null(values$note)) values$note <- rep("",length(values$nlin_file))
+    if (is.null(values$note)) values$note <- rep(" ",length(values$nlin_file))
   })
 
   observeEvent(input$comparate_rating, {
