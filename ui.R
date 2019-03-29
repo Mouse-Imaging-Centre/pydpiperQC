@@ -18,6 +18,7 @@ ui <- fluidPage(
            plotOutput("consensus_histogram", height="150px")
          )
 
+         ,fluidRow(textOutput("vars"))
   ),
 
   column(width=8,
@@ -37,5 +38,5 @@ ui <- fluidPage(
                        value = FALSE),
          plotOutput("comparate_histogram", height="150px")
   )
-  ,fluidRow(tableOutput("df"))
+  ,fluidRow(tableOutput("values"))
 )

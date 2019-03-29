@@ -3,30 +3,30 @@ server <- function(input, output) {
   values <- reactiveValues()
 
   observeEvent(input$input_csv, {
-    values$df <- read_csv(input$input_csv$datapath)
+    df <- read_csv(input$input_csv$datapath)
+    values$nlin_file <- df$nlin_file
 
-    #if first time, csv will not have these columns initialized.
-    if ( !("rating" %in% colnames(values$df)))
-      values$df$rating<- NA
-    if ( !("note" %in% colnames(values$df)))
-      values$df$note <- NA
+    if (is.null(values$rating)) values$rating <- rep(0,length(values$nlin_file))
+    if (is.null(values$note)) values$note <- rep("",length(values$nlin_file))
   })
 
   observeEvent(input$comparate_rating, {
-    req(values$df)
-    values$df[df_row(), "rating"] <- input$comparate_rating
+    req(values$rating)
+    values$rating[df_row()] <- input$comparate_rating
   })
 
   observeEvent(input$comparate_note, {
-    req(values$df)
-    values$df[df_row(), "note"] <- input$comparate_note
+    req(values$note)
+    values$note[df_row()] <- input$comparate_note
   })
 
-  output$df <-renderTable({
-    req(values$df)
-    values$df %>%
-      mutate(nlin_file = basename(nlin_file)) %>%
-      select(nlin_file, rating, note)
+  output$vars <- renderPrint({
+    paste("df_row()", df_row())
+  })
+
+  output$values <-renderTable({
+    req(values)
+    values %>% reactiveValuesToList() %>% as_tibble()
   })
 
   output$consensus_histogram <-renderPlot({
@@ -42,34 +42,35 @@ server <- function(input, output) {
   })
 
   output$comparate_file_dropdown <- renderUI({
-    req(values$df)
+    req(values$nlin_file)
     selectInput(inputId = "comparate_file",
                 label = NULL,
-                choices = setNames(values$df$nlin_file,
-                                   basename(values$df$nlin_file)),
-                selected = values$df$nlin_file[1])
+                choices = setNames(values$nlin_file,
+                                   basename(values$nlin_file)),
+                selected = values$nlin_file[1])
   })
 
   df_row <- reactive({
-    which(values$df$nlin_file == input$comparate_file)
+    which(values$nlin_file == input$comparate_file)
   })
 
   comparate <- reactive({
     req(df_row())
-    values$df$nlin_file[df_row()] %>% mincGetVolume() %>% mincArray()
+    #TODO
+    values$nlin_file[df_row()] %>% mincGetVolume() %>% mincArray()
   })
 
   output$comparate_rating_voter <- renderUI({
     numericInput(inputId = "comparate_rating",
                  label = "Rating",
-                 value = values$df$rating[df_row()],
+                 value = values$rating[df_row()],
                  min = 0, max = 5, step = 1)
   })
 
   output$comparate_note_entry <- renderUI({
     textInput(inputId = "comparate_note",
               label = "Note",
-              value = values$df$note[df_row()])
+              value = values$note[df_row()])
   })
 
   output$comparate_range_slider <- renderUI({
