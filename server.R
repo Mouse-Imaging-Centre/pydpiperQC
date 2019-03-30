@@ -8,13 +8,29 @@ server <- function(input, output) {
     values$nlin_file <- df$nlin_file
     length <- length(df$nlin_file)
 
-    maybe_initialize <- function(col, init = " ") {
+    maybe_initialize <- function(col, init) {
       if (is.null(values[[col]])) values[[col]] <- rep(init, length)
     }
-    walk(c("rating", "note",
+
+    walk(c("note"),
+         maybe_initialize %>% partial(init=" "))
+
+    walk(c("max_intensity",
+           "rating",
            "lower_intensity_range",
            "upper_intensity_range"),
-         maybe_initialize)
+         maybe_initialize %>% partial(init=0))
+  })
+
+  observeEvent(input$comparate_file, {
+    req(values$max_intensity, values$upper_intensity_range)
+
+    max_intensity <- comparate() %>% max() %>% round()
+
+    values$max_intensity[df_row()] <- max_intensity
+
+    if (values$upper_intensity_range[df_row()]==0)
+      values$upper_intensity_range[df_row()] <- max_intensity
   })
 
   observeEvent(input$comparate_rating, {
@@ -35,7 +51,7 @@ server <- function(input, output) {
   })
 
   output$vars <- renderPrint({
-    paste("df_row()", df_row())
+    paste(values$max_intensity[df_row()] %>% str)
   })
 
   output$values <-renderTable({
@@ -90,7 +106,7 @@ server <- function(input, output) {
     sliderInput(inputId = "comparate_range",
                 label = "Intensity Range",
                 min = 0,
-                max = round(max(comparate())),
+                max = values$max_intensity[df_row()],
                 value = c( values$lower_intensity_range[df_row()],
                            values$upper_intensity_range[df_row()]))
   })
@@ -98,7 +114,7 @@ server <- function(input, output) {
   output$comparate_contour_slider <- renderUI({
     sliderInput(inputId = "comparate_contour_level",
                 label = "Contour Level",
-                min = 0, max = round(max(comparate())),
+                min = 0, max = values$max_intensity[df_row()],
                 value = max(comparate())/2)
   })
 
