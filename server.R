@@ -1,5 +1,10 @@
 server <- function(input, output) {
 
+  consensus <- reactive({
+    req(input$consensus_file)
+    input$consensus_file$datapath %>% mincGetVolume() %>% mincArray()
+  })
+
   values <- reactiveValues()
 
   observeEvent(input$input_csv, {
@@ -51,7 +56,7 @@ server <- function(input, output) {
   })
 
   output$vars <- renderPrint({
-    paste(values$max_intensity[df_row()] %>% str)
+    paste(consensus() %>% str)
   })
 
   output$values <-renderTable({
@@ -61,11 +66,11 @@ server <- function(input, output) {
 
   output$consensus_histogram <-renderPlot({
     if (input$show_consensus_histogram) {
-      consensus %>%
+      consensus() %>%
         as.vector() %>%
         as_tibble() %>%
         ggplot() +
-        geom_histogram(aes(value), breaks = seq(0, max(consensus),40)) +
+        geom_histogram(aes(value), breaks = seq(0, max(consensus()),40)) +
         theme(axis.text.y = element_blank()) +
         xlab(NULL) +
         ylab(NULL)}
@@ -136,7 +141,7 @@ server <- function(input, output) {
         input$comparate_contour_level)
 
     sliceSeries(nrow=4, ncol=1, begin=100, end=300) %>%
-      anatomy(consensus,
+      anatomy(consensus(),
               low = input$consensus_range[1],
               high = input$consensus_range[2]) %>%
       contours(comparate(),
@@ -148,7 +153,7 @@ server <- function(input, output) {
       addtitle("Consensus") %>%
       ####
       sliceSeries(nrow=4, ncol=1, begin=100, end=300) %>%
-      anatomy(consensus,
+      anatomy(consensus(),
               low = input$consensus_range[1],
               high = input$consensus_range[2]) %>%
       contours(comparate(),

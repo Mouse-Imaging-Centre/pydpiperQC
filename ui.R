@@ -8,6 +8,7 @@ ui <- fluidPage(
 
          fluidRow(
            h3("Consensus"),
+           fileInput("consensus_file", "Upload average"),
            sliderInput(inputId = "consensus_range",
                        label = "Intensity Range",
                        min = 0, max = round(max(consensus)),

@@ -10,6 +10,5 @@ library(RMINC)
 library(MRIcrotome)
 library(grid)
 
-consensus <- "/hpf/largeprojects/MICe/nwang/collaborator_40um/Sibille_stress2/Sibille_stress2_nlin/Sibille_stress2-nlin-3.mnc" %>%
-  mincGetVolume() %>%
-  mincArray()
+#By default, Shiny limits fule uploads to 5MB per file. Let's allow 1GB.
+options(shiny.maxRequestSize=1024*1024^2)
