@@ -3,7 +3,8 @@ ui <- fluidPage(
 
   column(width=2,
          fluidRow(
-           fileInput("input_csv", "Upload previous annotation")
+           h3("Annotation"),
+           fileInput("input_csv", NULL)
          ),
 
          fluidRow(
