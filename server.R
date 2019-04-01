@@ -108,6 +108,7 @@ server <- function(input, output) {
   })
 
   output$comparate_range_slider <- renderUI({
+    req(df_row())
     sliderInput(inputId = "comparate_range",
                 label = "Intensity Range",
                 min = 0,
