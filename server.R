@@ -11,7 +11,7 @@ server <- function(input, output) {
     df <- read_csv(input$input_csv$datapath)
 
     values$nlin_file <- df$nlin_file
-    length <- length(df$nlin_file)
+    length <- nrow(df)
 
     maybe_initialize <- function(col, init) {
       if (is.null(values[[col]])) values[[col]] <- rep(init, length)
