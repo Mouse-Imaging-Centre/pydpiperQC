@@ -10,7 +10,7 @@ server <- function(input, output) {
   observeEvent(input$input_csv, {
     df <- read_csv(input$input_csv$datapath)
 
-    values$nlin_file <- df$nlin_file
+    values$comparate_file <- df[,input$col_name,drop=TRUE]
     length <- nrow(df)
 
     maybe_initialize <- function(col, init) {
@@ -77,16 +77,16 @@ server <- function(input, output) {
   })
 
   output$comparate_file_dropdown <- renderUI({
-    req(values$nlin_file)
+    req(values$comparate_file)
     selectInput(inputId = "comparate_file",
                 label = NULL,
-                choices = setNames(values$nlin_file,
-                                   basename(values$nlin_file)),
-                selected = values$nlin_file[1])
+                choices = setNames(values$comparate_file,
+                                   basename(values$comparate_file)),
+                selected = values$comparate_file[1])
   })
 
   df_row <- reactive({
-    which(values$nlin_file == input$comparate_file)
+    which(values$comparate_file == input$comparate_file)
   })
 
   comparate <- reactive({
