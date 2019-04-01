@@ -89,14 +89,17 @@ server <- function(input, output) {
 
   output$consensus_histogram <-renderPlot({
     if (input$show_consensus_histogram) {
-      consensus() %>%
-        as.vector() %>%
-        as_tibble() %>%
-        ggplot() +
-        geom_histogram(aes(value), breaks = seq(0, max(consensus()),40)) +
-        theme(axis.text.y = element_blank()) +
-        xlab(NULL) +
-        ylab(NULL)}
+      consensus() %>% hist(col="black", main=NULL, xlab=NULL, ylab=NULL,
+                           yaxt='n',
+                           xaxs="i", yaxs="i")
+        # as.vector() %>%
+        # as_tibble() %>%
+        # ggplot() +
+        # geom_histogram(aes(value), bins=40) +
+        # theme(axis.text.y = element_blank()) +
+        # xlab(NULL) +
+        # ylab(NULL)
+    }
   })
 
   output$comparate_file_dropdown <- renderUI({
