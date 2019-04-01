@@ -60,10 +60,10 @@ server <- function(input, output) {
   })
 
   output$values <-renderTable({
-    values %>%
-      reactiveValuesToList() %>%
-      as_tibble() %>%
-      mutate_if(is.character, basename)
+    if (input$display_table) {values %>%
+        reactiveValuesToList() %>%
+        as_tibble() %>%
+        mutate_if(is.character, basename)}
   },
   digits = 0
   )
