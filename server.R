@@ -56,13 +56,17 @@ server <- function(input, output) {
   })
 
   output$vars <- renderPrint({
-    paste(consensus() %>% str)
+    ""
   })
 
   output$values <-renderTable({
-    req(values)
-    values %>% reactiveValuesToList() %>% as_tibble()
-  })
+    values %>%
+      reactiveValuesToList() %>%
+      as_tibble() %>%
+      mutate_if(is.character, basename)
+  },
+  digits = 0
+  )
 
   output$consensus_histogram <-renderPlot({
     if (input$show_consensus_histogram) {
