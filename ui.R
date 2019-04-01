@@ -3,15 +3,14 @@ ui <- fluidPage(
 
   fluidRow(
     column(width=2,
+
            h3("Annotation"),
            fileInput("input_csv", NULL),
 
            h3("Consensus"),
            fileInput("consensus_file", "Upload average"),
-           sliderInput(inputId = "consensus_range",
-                       label = "Intensity Range",
-                       min = 0, max = round(max(consensus)),
-                       value = c(0, round(max(consensus)))),
+           uiOutput("consensus_range_slider"),
+           uiOutput("consensus_contour_slider"),
            checkboxInput(inputId = "show_consensus_histogram",
                          label = "Show Consensus Histogram",
                          value = FALSE),
@@ -34,7 +33,6 @@ ui <- fluidPage(
            uiOutput("comparate_rating_voter"),
            uiOutput("comparate_note_entry"),
            uiOutput("comparate_range_slider"),
-           uiOutput("comparate_contour_slider"),
            checkboxInput(inputId = "show_comparate_histogram",
                          label = "Show Comparate Histogram",
                          value = FALSE),

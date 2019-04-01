@@ -4,6 +4,9 @@ server <- function(input, output) {
     req(input$consensus_file)
     input$consensus_file$datapath %>% mincGetVolume() %>% mincArray()
   })
+  max_consensus <- reactive({
+    consensus() %>% max() %>% round()
+  })
 
   values <- reactiveValues()
 
@@ -55,6 +58,7 @@ server <- function(input, output) {
     values$upper_intensity_range[df_row()] <- input$comparate_range[2]
   })
 
+
   output$vars <- renderPrint({
     ""
   })
@@ -67,6 +71,21 @@ server <- function(input, output) {
   },
   digits = 0
   )
+  output$consensus_range_slider <- renderUI({
+    req(max_consensus())
+    sliderInput(inputId = "consensus_range",
+                label = "Intensity Range",
+                min = 0,
+                max = max_consensus(),
+                value = c( 0, max_consensus()))
+  })
+  output$consensus_contour_slider <- renderUI({
+    req(max_consensus())
+    sliderInput(inputId = "consensus_contour_level",
+                label = "Contour Level",
+                min = 0, max = max_consensus(),
+                value = max_consensus()/2)
+  })
 
   output$consensus_histogram <-renderPlot({
     if (input$show_consensus_histogram) {
@@ -121,13 +140,6 @@ server <- function(input, output) {
                            values$upper_intensity_range[df_row()]))
   })
 
-  output$comparate_contour_slider <- renderUI({
-    sliderInput(inputId = "comparate_contour_level",
-                label = "Contour Level",
-                min = 0, max = values$max_intensity[df_row()],
-                value = max(comparate())/2)
-  })
-
   output$comparate_histogram <- renderPlot({
     if (input$show_comparate_histogram) {
       comparate() %>%
@@ -143,14 +155,14 @@ server <- function(input, output) {
   output$plot <- renderPlot({
     req(input$consensus_range,
         input$comparate_range,
-        input$comparate_contour_level)
+        input$consensus_contour_level)
 
     sliceSeries(nrow=4, ncol=1, begin=100, end=300) %>%
       anatomy(consensus(),
               low = input$consensus_range[1],
               high = input$consensus_range[2]) %>%
-      contours(comparate(),
-               levels = input$comparate_contour_level,
+      contours(consensus(),
+               levels = input$consensus_contour_level,
                col="red") %>%
       # anatomySliceIndicator(consensus,
       #                       low = input$consensus_range[1],
@@ -158,11 +170,11 @@ server <- function(input, output) {
       addtitle("Consensus") %>%
       ####
       sliceSeries(nrow=4, ncol=1, begin=100, end=300) %>%
-      anatomy(consensus(),
-              low = input$consensus_range[1],
-              high = input$consensus_range[2]) %>%
-      contours(comparate(),
-               levels = input$comparate_contour_level,
+      anatomy(comparate(),
+              low = input$comparate_range[1],
+              high = input$comparate_range[2]) %>%
+      contours(consensus(),
+               levels = input$consensus_contour_level,
                col="red") %>%
       addtitle("Overlay") %>%
       ####
@@ -170,8 +182,8 @@ server <- function(input, output) {
       anatomy(comparate(),
               low = input$comparate_range[1],
               high = input$comparate_range[2]) %>%
-      contours(comparate(),
-               levels = input$comparate_contour_level,
+      contours(consensus(),
+               levels = input$consensus_contour_level,
                col="red") %>%
       addtitle("Comparate") %>%
       draw()
