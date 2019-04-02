@@ -87,18 +87,23 @@ server <- function(input, output) {
                 value = max_consensus()/2)
   })
 
+  quick_hist <- function(x) {
+    x %>%
+      hist(breaks=40, plot=FALSE) %>%
+      .[c("mids", "counts")] %>%
+      as_tibble() %>%
+      ggplot() +
+      geom_col(aes(x=mids, y=counts))+
+      theme(
+        axis.title.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+  }
+
   output$consensus_histogram <-renderPlot({
     if (input$show_consensus_histogram) {
-      consensus() %>% hist(col="black", main=NULL, xlab=NULL, ylab=NULL,
-                           yaxt='n',
-                           xaxs="i", yaxs="i")
-        # as.vector() %>%
-        # as_tibble() %>%
-        # ggplot() +
-        # geom_histogram(aes(value), bins=40) +
-        # theme(axis.text.y = element_blank()) +
-        # xlab(NULL) +
-        # ylab(NULL)
+      consensus() %>% quick_hist()
     }
   })
 
@@ -145,14 +150,8 @@ server <- function(input, output) {
 
   output$comparate_histogram <- renderPlot({
     if (input$show_comparate_histogram) {
-      comparate() %>%
-        as.vector() %>%
-        as_tibble() %>%
-        ggplot() +
-        geom_histogram(aes(value), breaks = seq(0, max(comparate()),40)) +
-        theme(axis.text.y = element_blank()) +
-        xlab(NULL) +
-        ylab(NULL)}
+      comparate() %>% quick_hist()
+      }
   })
 
   output$plot <- renderPlot({
