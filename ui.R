@@ -5,7 +5,10 @@ ui <- fluidPage(
     column(width=2,
 
            h3("Annotation"),
-           fileInput("input_csv", NULL),
+           shinyFilesButton("input_csv",
+                            label = "Browse",
+                            title = "Select Annotation File",
+                            multiple=FALSE),
 
            h3("Consensus"),
            fileInput("consensus_file", "Upload average"),

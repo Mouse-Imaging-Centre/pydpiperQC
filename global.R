@@ -5,6 +5,8 @@ library(readr)
 library(purrr)
 library(ggplot2)
 
+library(fs)
+library(shinyFiles)
 library(shiny)
 library(RMINC)
 library(MRIcrotome)

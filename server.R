@@ -1,19 +1,24 @@
 server <- function(input, output) {
-
-  consensus <- reactive({
-    req(input$consensus_file)
-    input$consensus_file$datapath %>% mincGetVolume() %>% mincArray()
-  })
-  max_consensus <- reactive({
-    consensus() %>% max() %>% round()
-  })
-
   values <- reactiveValues()
 
-  observeEvent(input$input_csv, {
-    df <- read_csv(input$input_csv$datapath)
+  volumes <- c(
+    HPF = file.path("/hpf/largeprojects/MICe/",
+                    basename(fs::path_home())),
+    Home = fs::path_home(),
+    test = "/hpf/largeprojects/MICe/nwang/collaborator_40um/Sibille_stress2")
+  shinyFileChoose(input, "input_csv", roots = volumes)
+  input_csv <- reactive({
+    parseFilePaths(roots=volumes, input$input_csv)
+  })
+  observeEvent(input_csv(), {
+    req( nrow(input_csv()) != 0 )
+    df <- input_csv()$datapath  %>%
+      read_csv()
+    df_path <- input_csv()$datapath %>%
+      dirname()
 
-    values$comparate_file <- df[,input$col_name,drop=TRUE]
+    values$comparate_file <- df[, input$col_name, drop=TRUE] %>%
+      R.utils::getAbsolutePath(df_path)
     length <- nrow(df)
 
     maybe_initialize <- function(col, init) {
@@ -28,6 +33,14 @@ server <- function(input, output) {
            "lower_intensity_range",
            "upper_intensity_range"),
          maybe_initialize %>% partial(init=0))
+  })
+
+  consensus <- reactive({
+    req(input$consensus_file)
+    input$consensus_file$datapath %>% mincGetVolume() %>% mincArray()
+  })
+  max_consensus <- reactive({
+    consensus() %>% max() %>% round()
   })
 
   observeEvent(input$comparate_file, {
@@ -60,7 +73,7 @@ server <- function(input, output) {
 
 
   output$vars <- renderPrint({
-    ""
+    # input$input_csv %>% str()
   })
 
   output$values <-renderTable({
