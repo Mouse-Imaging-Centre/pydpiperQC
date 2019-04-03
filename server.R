@@ -23,26 +23,24 @@ server <- function(input, output) {
     walk(c("note"),
          maybe_initialize %>% partial(init=" "))
 
-    walk(c("max_intensity",
-           "rating",
-           "lower_intensity_range",
-           "upper_intensity_range"),
-         maybe_initialize %>% partial(init=0))
+    # walk(c("rating"),
+    #      maybe_initialize %>% partial(init=0))
+
+    walk (c("rating", "max_intensity",
+            "lower_intensity_range",
+            "upper_intensity_range"),
+          maybe_initialize %>% partial(init=NA))
   })
 
   observeEvent(input$comparate_file, {
-    req(values$max_intensity, values$upper_intensity_range)
-
     max_intensity <- comparate() %>% max() %>% round()
-
     values$max_intensity[df_row()] <- max_intensity
 
-    if (values$upper_intensity_range[df_row()]==0)
+    if (values$upper_intensity_range[df_row()] %>% is.na())
       values$upper_intensity_range[df_row()] <- max_intensity
   })
 
   observeEvent(input$comparate_rating, {
-    req(values$rating)
     values$rating[df_row()] <- input$comparate_rating
   })
 
@@ -52,24 +50,21 @@ server <- function(input, output) {
   })
 
   observeEvent(input$comparate_range, {
-    req(values$lower_intensity_range,
-        values$upper_intensity_range)
     values$lower_intensity_range[df_row()] <- input$comparate_range[1]
     values$upper_intensity_range[df_row()] <- input$comparate_range[2]
   })
-
 
   output$vars <- renderPrint({
     ""
   })
 
-  output$values <-renderTable({
+  output$values <- renderTable({
     if (input$display_table) {values %>%
         reactiveValuesToList() %>%
         as_tibble() %>%
         mutate_if(is.character, basename)}
   },
-  digits = 0
+  digits = 0, na=""
   )
   output$consensus_range_slider <- renderUI({
     req(max_consensus())
@@ -100,7 +95,6 @@ server <- function(input, output) {
         axis.title.y = element_blank(),
         axis.ticks.y = element_blank())
   }
-
   output$consensus_histogram <-renderPlot({
     if (input$show_consensus_histogram) {
       consensus() %>% quick_hist()
@@ -126,26 +120,32 @@ server <- function(input, output) {
   })
 
   output$comparate_rating_voter <- renderUI({
+    req(df_row())
     numericInput(inputId = "comparate_rating",
                  label = "Rating",
-                 value = values$rating[df_row()],
-                 min = 0, max = 5, step = 1)
+                 value = isolate(values$rating[df_row()]),
+                 min = 1, max = 5, step = 1)
   })
 
   output$comparate_note_entry <- renderUI({
+    req(df_row())
     textInput(inputId = "comparate_note",
               label = "Note",
-              value = values$note[df_row()])
+              value = isolate(values$note[df_row()]))
   })
 
   output$comparate_range_slider <- renderUI({
     req(df_row())
-    sliderInput(inputId = "comparate_range",
-                label = "Intensity Range",
-                min = 0,
-                max = values$max_intensity[df_row()],
-                value = c( values$lower_intensity_range[df_row()],
-                           values$upper_intensity_range[df_row()]))
+    sliderInput(
+      inputId = "comparate_range",
+      label = "Intensity Range",
+      min = 0,
+      max = values$max_intensity[df_row()],
+      value = isolate(
+        c(values$lower_intensity_range[df_row()],
+          values$upper_intensity_range[df_row()])
+      )
+    )
   })
 
   output$comparate_histogram <- renderPlot({
