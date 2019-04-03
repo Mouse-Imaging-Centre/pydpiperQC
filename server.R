@@ -2,6 +2,7 @@ server <- function(input, output) {
   values <- reactiveValues()
 
   volumes <- c(
+    Root = "/",
     HPF = file.path("/hpf/largeprojects/MICe/",
                     basename(fs::path_home())),
     Home = fs::path_home(),
