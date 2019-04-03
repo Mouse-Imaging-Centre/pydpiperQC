@@ -55,7 +55,7 @@ server <- function(input, output) {
   })
 
   output$vars <- renderPrint({
-    ""
+    plot_conductor() %>% str()
   })
 
   output$values <- renderTable({
@@ -95,10 +95,16 @@ server <- function(input, output) {
         axis.title.y = element_blank(),
         axis.ticks.y = element_blank())
   }
-  output$consensus_histogram <-renderPlot({
+  output$consensus_histogram <- renderPlot({
     if (input$show_consensus_histogram) {
       consensus() %>% quick_hist()
     }
+  })
+
+  output$slice_indicator <- renderPlot({
+    if (input$show_slice_indicator) {grid.newpage()
+      #HACK!
+      plot_conductor()$ssl[[3]]$sliceIndicator %>% grid.draw()}
   })
 
   output$comparate_file_dropdown <- renderUI({
@@ -154,10 +160,11 @@ server <- function(input, output) {
       }
   })
 
-  output$plot <- renderPlot({
+  plot_conductor <- reactive({
     req(input$consensus_range,
         input$comparate_range,
-        input$consensus_contour_level)
+        input$consensus_contour_level
+    )
 
     sliceSeries(nrow=4, ncol=1, begin=100, end=300) %>%
       anatomy(consensus(),
@@ -166,9 +173,6 @@ server <- function(input, output) {
       contours(consensus(),
                levels = input$consensus_contour_level,
                col="red") %>%
-      # anatomySliceIndicator(consensus,
-      #                       low = input$consensus_range[1],
-      #                       high = input$consensus_range[2]) %>%
       addtitle("Consensus") %>%
       ####
       sliceSeries(nrow=4, ncol=1, begin=100, end=300) %>%
@@ -188,6 +192,13 @@ server <- function(input, output) {
                levels = input$consensus_contour_level,
                col="red") %>%
       addtitle("Comparate") %>%
-      draw()
+      anatomySliceIndicator(consensus(),
+                            low = input$consensus_range[1],
+                            high = input$consensus_range[2])
+  })
+
+  output$plot <- renderPlot({
+    req(plot_conductor())
+    plot_conductor() %>% draw()
   })
 }

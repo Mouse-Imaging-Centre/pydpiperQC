@@ -14,9 +14,13 @@ ui <- fluidPage(
            checkboxInput(inputId = "show_consensus_histogram",
                          label = "Show Consensus Histogram",
                          value = FALSE),
-           plotOutput("consensus_histogram", height="150px")
+           plotOutput("consensus_histogram", height="150px"),
+           checkboxInput(inputId = "show_slice_indicator",
+                        label = "Show Slice Indicator",
+                        value = FALSE),
+           plotOutput("slice_indicator", height="100px")
 
-           ,textOutput("vars")
+           # ,textOutput("vars")
     ),
 
     column(width=8,
