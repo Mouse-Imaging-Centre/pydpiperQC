@@ -1,4 +1,5 @@
 ui <- fluidPage(
+  tags$script(js),
   titlePanel("Pydpiper Quality Check"),
 
   fluidRow(
@@ -16,11 +17,11 @@ ui <- fluidPage(
                          value = FALSE),
            plotOutput("consensus_histogram", height="150px"),
            checkboxInput(inputId = "show_slice_indicator",
-                        label = "Show Slice Indicator",
-                        value = FALSE),
+                         label = "Show Slice Indicator",
+                         value = FALSE),
            plotOutput("slice_indicator", height="100px")
 
-           # ,textOutput("vars")
+           ,textOutput("vars")
     ),
 
     column(width=8,
