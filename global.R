@@ -18,7 +18,10 @@ var w_presses = 0;
 var s_presses = 0;
 
 $(document).on("keypress", function (e) {
-  console.log(e.which);
+  //console.log(e.which);
+  //console.log(document.activeElement);
+
+  if (document.activeElement.id === "comparate_note") {return}
 
   if(e.which === 119){
     w_presses++;
