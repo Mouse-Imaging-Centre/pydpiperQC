@@ -9,27 +9,30 @@ server <- function(input, output, session) {
   })
 
   values <- reactiveValues()
+  metavalues <- reactiveValues()
 
   observeEvent(input$input_csv, {
-    df <- read_csv(input$input_csv$datapath)
-
-    values$comparate_file <- df[,input$col_name,drop=TRUE]
-    values$nrow <- nrow(df)
-
+    metavalues$input_csv <- read_csv(input$input_csv$datapath)
+    metavalues$nrow <- nrow(metavalues$input_csv)
+    metavalues$col_names <- colnames(metavalues$input_csv)
+    if ("nlin_file" %in% metavalues$col_names){metavalues$default_column <- "nlin_file"}
+    else {metavalues$default_column <- 1}
     maybe_initialize <- function(col, init) {
-      if (is.null(values[[col]])) values[[col]] <- rep(init, values$nrow)
+      if (is.null(values[[col]])) values[[col]] <- rep(init, metavalues$nrow)
     }
 
     walk(c("note"),
          maybe_initialize %>% partial(init=" "))
 
-    # walk(c("rating"),
-    #      maybe_initialize %>% partial(init=0))
-
     walk (c("rating", "max_intensity",
             "lower_intensity_range",
             "upper_intensity_range"),
           maybe_initialize %>% partial(init=NA))
+  })
+
+  observeEvent(input$col_name, {
+    req(metavalues$default_column)
+    values$comparate_file <- metavalues$input_csv[, input$col_name, drop=TRUE]
   })
 
   observeEvent(input$comparate_file, {
@@ -66,7 +69,7 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$s_press, {
-    if(df_row() < values$nrow){
+    if(df_row() < metavalues$nrow){
       updateSelectInput(
         session, "comparate_file",
         choices = setNames(values$comparate_file,
@@ -85,7 +88,7 @@ server <- function(input, output, session) {
   })
 
   output$vars <- renderPrint({
-    paste(input$w_press, input$key_rating)
+    metavalues$default_column
   })
 
   output$values <- renderTable({
@@ -93,8 +96,7 @@ server <- function(input, output, session) {
       values %>%
         reactiveValuesToList() %>%
         as_tibble() %>%
-        mutate_if(is.character, basename) %>%
-        select(-nrow)
+        mutate_if(is.character, basename)
       }
   },
   digits = 0, na=""
@@ -139,6 +141,14 @@ server <- function(input, output, session) {
     if (input$show_slice_indicator) {grid.newpage()
       #HACK!
       plot_conductor()$ssl[[3]]$sliceIndicator %>% grid.draw()}
+  })
+
+  output$col_name_dropdown <- renderUI({
+    req(metavalues$col_names, metavalues$default_column)
+    selectInput(inputId = "col_name",
+                label = NULL,
+                choices = metavalues$col_names,
+                selected = metavalues$default_column)
   })
 
   output$comparate_file_dropdown <- renderUI({

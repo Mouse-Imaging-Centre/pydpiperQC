@@ -31,9 +31,7 @@ ui <- fluidPage(
 
     column(width=2,
            h3("Comparate"),
-           textInput("col_name",
-                     label=NULL,
-                     value = "nlin_file"),
+           uiOutput("col_name_dropdown"),
            uiOutput("comparate_file_dropdown"),
            uiOutput("comparate_rating_voter"),
            uiOutput("comparate_note_entry"),
