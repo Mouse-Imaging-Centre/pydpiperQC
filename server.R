@@ -1,4 +1,4 @@
-server <- function(input, output) {
+server <- function(input, output, session) {
 
   consensus <- reactive({
     req(input$consensus_file)
@@ -14,10 +14,10 @@ server <- function(input, output) {
     df <- read_csv(input$input_csv$datapath)
 
     values$comparate_file <- df[,input$col_name,drop=TRUE]
-    length <- nrow(df)
+    values$nrow <- nrow(df)
 
     maybe_initialize <- function(col, init) {
-      if (is.null(values[[col]])) values[[col]] <- rep(init, length)
+      if (is.null(values[[col]])) values[[col]] <- rep(init, values$nrow)
     }
 
     walk(c("note"),
@@ -54,18 +54,52 @@ server <- function(input, output) {
     values$upper_intensity_range[df_row()] <- input$comparate_range[2]
   })
 
+  observeEvent(input$w_press, {
+    if(df_row() > 1){
+      updateSelectInput(
+        session, "comparate_file",
+        choices = setNames(values$comparate_file,
+                           basename(values$comparate_file)),
+        selected = values$comparate_file[df_row() - 1]
+      )
+    }
+  })
+
+  observeEvent(input$s_press, {
+    if(df_row() < values$nrow){
+      updateSelectInput(
+        session, "comparate_file",
+        choices = setNames(values$comparate_file,
+                           basename(values$comparate_file)),
+        selected = values$comparate_file[df_row() + 1]
+      )
+    }
+  })
+
+  observeEvent(input$key_rating, {
+    updateNumericInput(
+      session, "comparate_rating",
+      label = "Rating",
+      value = input$key_rating,
+      min = 1, max = 5, step = 1)
+  })
+
   output$vars <- renderPrint({
-    plot_conductor() %>% str()
+    paste(input$w_press, input$key_rating)
   })
 
   output$values <- renderTable({
-    if (input$display_table) {values %>%
+    if (input$display_table) {
+      values %>%
         reactiveValuesToList() %>%
         as_tibble() %>%
-        mutate_if(is.character, basename)}
+        mutate_if(is.character, basename) %>%
+        select(-nrow)
+      }
   },
   digits = 0, na=""
   )
+
   output$consensus_range_slider <- renderUI({
     req(max_consensus())
     sliderInput(inputId = "consensus_range",
