@@ -7,6 +7,9 @@ server <- function(input, output, session) {
   max_consensus <- reactive({
     consensus() %>% max() %>% round()
   })
+  dim_consensus <- reactive({
+    consensus() %>% dim()
+  })
 
   values <- reactiveValues()
   metavalues <- reactiveValues()
@@ -88,7 +91,6 @@ server <- function(input, output, session) {
   })
 
   output$vars <- renderPrint({
-    metavalues$default_column
   })
 
   output$values <- renderTable({
@@ -137,6 +139,13 @@ server <- function(input, output, session) {
     }
   })
 
+  output$consensus_slice_range_slider <- renderUI({
+    req(dim_consensus())
+    sliderInput(inputId = "consensus_slice_range",
+                label = "Slices",
+                min = 0, max = dim_consensus()[2],
+                value = c(0.1, 0.9) * dim_consensus()[2])
+  })
   output$slice_indicator <- renderPlot({
     if (input$show_slice_indicator) {grid.newpage()
       #HACK!
@@ -210,7 +219,9 @@ server <- function(input, output, session) {
         input$consensus_contour_level
     )
 
-    sliceSeries(nrow=4, ncol=1, begin=100, end=300) %>%
+    sliceSeries(nrow=4, ncol=1,
+                begin=input$consensus_slice_range[1],
+                end=input$consensus_slice_range[2]) %>%
       anatomy(consensus(),
               low = input$consensus_range[1],
               high = input$consensus_range[2]) %>%
@@ -219,7 +230,9 @@ server <- function(input, output, session) {
                col="red") %>%
       addtitle("Consensus") %>%
       ####
-      sliceSeries(nrow=4, ncol=1, begin=100, end=300) %>%
+      sliceSeries(nrow=4, ncol=1,
+                  begin=input$consensus_slice_range[1],
+                  end=input$consensus_slice_range[2]) %>%
       anatomy(comparate(),
               low = input$comparate_range[1],
               high = input$comparate_range[2]) %>%
@@ -228,7 +241,9 @@ server <- function(input, output, session) {
                col="red") %>%
       addtitle("Overlay") %>%
       ####
-      sliceSeries(nrow=4, ncol=1, begin=100, end=300) %>%
+      sliceSeries(nrow=4, ncol=1,
+                  begin=input$consensus_slice_range[1],
+                  end=input$consensus_slice_range[2]) %>%
       anatomy(comparate(),
               low = input$comparate_range[1],
               high = input$comparate_range[2]) %>%

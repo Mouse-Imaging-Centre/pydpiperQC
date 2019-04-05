@@ -16,6 +16,7 @@ ui <- fluidPage(
                          label = "Show Consensus Histogram",
                          value = FALSE),
            plotOutput("consensus_histogram", height="150px"),
+           uiOutput("consensus_slice_range_slider"),
            checkboxInput(inputId = "show_slice_indicator",
                          label = "Show Slice Indicator",
                          value = FALSE),
