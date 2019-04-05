@@ -7,7 +7,7 @@ server <- function(input, output, session) {
     content = function(file) {
       values %>%
         reactiveValuesToList() %>%
-        as_tibble() %>%
+        tibble::as_tibble() %>%
         left_join(metavalues$input_csv,
                   by=c("comparate_file" = input$col_name)) %>%
         write_csv(file)
@@ -29,7 +29,7 @@ server <- function(input, output, session) {
   metavalues <- reactiveValues()
 
   observeEvent(input$input_csv, {
-    metavalues$input_csv <- read_csv(input$input_csv$datapath)
+    metavalues$input_csv <- readr::read_csv(input$input_csv$datapath)
     metavalues$nrow <- nrow(metavalues$input_csv)
 
     maybe_initialize <- function(col, init) {
@@ -135,7 +135,7 @@ server <- function(input, output, session) {
     if (input$display_table) {
       values %>%
         reactiveValuesToList() %>%
-        as_tibble() %>%
+        tibble::as_tibble() %>%
         mutate_if(is.character, basename)
       }
   },
@@ -162,7 +162,7 @@ server <- function(input, output, session) {
     x %>%
       hist(breaks=40, plot=FALSE) %>%
       .[c("mids", "counts")] %>%
-      as_tibble() %>%
+      tibble::as_tibble() %>%
       ggplot() +
       geom_col(aes(x=mids, y=counts))+
       theme(
