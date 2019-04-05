@@ -6,10 +6,11 @@ ui <- fluidPage(
     column(width=2,
 
            h3("Annotation"),
-           fileInput("input_csv", NULL),
+           fileInput("input_csv", label = NULL),
+           downloadButton("download_annotation", label = "Download"),
 
            h3("Consensus"),
-           fileInput("consensus_file", "Upload average"),
+           fileInput("consensus_file", label = NULL),
            uiOutput("consensus_range_slider"),
            uiOutput("consensus_contour_slider"),
            checkboxInput(inputId = "show_consensus_histogram",

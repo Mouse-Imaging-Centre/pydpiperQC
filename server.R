@@ -1,5 +1,19 @@
 server <- function(input, output, session) {
 
+  output$download_annotation <- downloadHandler(
+    filename = function() {
+      paste0(Sys.Date(), "_pydpiperQC", ".csv")
+    },
+    content = function(file) {
+      values %>%
+        reactiveValuesToList() %>%
+        as_tibble() %>%
+        left_join(metavalues$input_csv,
+                  by=c("comparate_file" = input$col_name)) %>%
+        write_csv(file)
+    }
+  )
+
   consensus <- reactive({
     req(input$consensus_file)
     input$consensus_file$datapath %>% mincGetVolume() %>% mincArray()
