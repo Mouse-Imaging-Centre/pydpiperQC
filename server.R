@@ -47,7 +47,7 @@ server <- function(input, output, session) {
     values$rating[df_row()] <- input$comparate_rating
   })
 
-  observeEvent(input$comparate_note, {
+  observeEvent(input$comparate_note_enter_press, {
     req(values$note)
     values$note[df_row()] <- input$comparate_note
   })

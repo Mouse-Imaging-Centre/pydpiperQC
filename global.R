@@ -16,10 +16,18 @@ options(shiny.maxRequestSize=1024*1024^2)
 js <- '
 var w_presses = 0;
 var s_presses = 0;
+var comparate_note_enter_presses = 0;
 
 $(document).on("keypress", function (e) {
-  //console.log(e.which);
-  //console.log(document.activeElement);
+  console.log(e.which);
+  console.log(document.activeElement);
+
+  if (document.activeElement.id === "comparate_note") {
+    if(e.which === 13){
+    comparate_note_enter_presses++;
+    Shiny.onInputChange("comparate_note_enter_press", comparate_note_enter_presses);
+  }
+  }
 
   if (document.activeElement.id === "comparate_note") {return}
 
