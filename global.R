@@ -26,6 +26,7 @@ $(document).on("keypress", function (e) {
     if(e.which === 13){
     comparate_note_enter_presses++;
     Shiny.onInputChange("comparate_note_enter_press", comparate_note_enter_presses);
+    document.activeElement.blur();
   }
   }
 
