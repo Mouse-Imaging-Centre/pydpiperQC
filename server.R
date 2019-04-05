@@ -31,67 +31,91 @@ server <- function(input, output, session) {
   observeEvent(input$input_csv, {
     metavalues$input_csv <- read_csv(input$input_csv$datapath)
     metavalues$nrow <- nrow(metavalues$input_csv)
-    metavalues$col_names <- colnames(metavalues$input_csv)
-    if ("nlin_file" %in% metavalues$col_names){metavalues$default_column <- "nlin_file"}
-    else {metavalues$default_column <- 1}
+
     maybe_initialize <- function(col, init) {
       if (is.null(values[[col]])) values[[col]] <- rep(init, metavalues$nrow)
     }
-
     walk(c("note"),
          maybe_initialize %>% partial(init=" "))
-
-    walk (c("rating", "max_intensity",
+    walk (c("rating",
+            "max_intensity",
+            "min_intensity",
             "lower_intensity_range",
             "upper_intensity_range"),
           maybe_initialize %>% partial(init=NA))
+
+    metavalues$col_names <- colnames(metavalues$input_csv)
+    if ("nlin_file" %in% metavalues$col_names){metavalues$default_column <- "nlin_file"}
+    else {metavalues$default_column <- 1}
   })
 
   observeEvent(input$col_name, {
     req(metavalues$default_column)
-    values$comparate_file <- metavalues$input_csv[, input$col_name, drop=TRUE]
+    values$comparate_file <-
+      metavalues$input_csv[, input$col_name, drop=TRUE]
   })
 
   observeEvent(input$comparate_file, {
-    max_intensity <- comparate() %>% max() %>% round()
-    values$max_intensity[df_row()] <- max_intensity
+    metavalues$last_df_row <-
+      which(values$comparate_file == input$comparate_file)
+    if (!is.null(metavalues$df_row))
+      metavalues$last_df_row <- metavalues$df_row
+    metavalues$df_row <-
+      which(values$comparate_file == input$comparate_file)
 
-    if (values$upper_intensity_range[df_row()] %>% is.na())
-      values$upper_intensity_range[df_row()] <- max_intensity
+    max_intensity <- comparate() %>% max() %>% round()
+    min_intensity <- comparate() %>% min() %>% round()
+
+    values$max_intensity[metavalues$df_row] <- max_intensity
+    values$min_intensity[metavalues$df_row] <- min_intensity
+
+    if (values$upper_intensity_range[metavalues$df_row] %>% is.na())
+      if (values$upper_intensity_range[metavalues$last_df_row] %>% is.na())
+        values$upper_intensity_range[metavalues$df_row] <- max_intensity
+      else
+        values$upper_intensity_range[metavalues$df_row] <-
+      values$upper_intensity_range[metavalues$last_df_row]
+
+    if (values$lower_intensity_range[metavalues$df_row] %>% is.na())
+      if (values$lower_intensity_range[metavalues$last_df_row] %>% is.na())
+        values$lower_intensity_range[metavalues$df_row] <- min_intensity
+    else
+      values$lower_intensity_range[metavalues$df_row] <-
+      values$lower_intensity_range[metavalues$last_df_row]
   })
 
   observeEvent(input$comparate_rating, {
-    values$rating[df_row()] <- input$comparate_rating
+    values$rating[metavalues$df_row] <- input$comparate_rating
   })
 
   observeEvent(input$comparate_note_enter_press, {
     req(values$note)
-    values$note[df_row()] <- input$comparate_note
+    values$note[metavalues$df_row] <- input$comparate_note
   })
 
   observeEvent(input$comparate_range, {
-    values$lower_intensity_range[df_row()] <- input$comparate_range[1]
-    values$upper_intensity_range[df_row()] <- input$comparate_range[2]
+    values$lower_intensity_range[metavalues$df_row] <- input$comparate_range[1]
+    values$upper_intensity_range[metavalues$df_row] <- input$comparate_range[2]
   })
 
   observeEvent(input$w_press, {
-    if(df_row() > 1){
+    if(metavalues$df_row > 1){
       updateSelectInput(
         session, "comparate_file",
         choices = setNames(values$comparate_file,
                            basename(values$comparate_file)),
-        selected = values$comparate_file[df_row() - 1]
+        selected = values$comparate_file[metavalues$df_row - 1]
       )
     }
   })
 
   observeEvent(input$s_press, {
-    if(df_row() < metavalues$nrow){
+    if(metavalues$df_row < metavalues$nrow){
       updateSelectInput(
         session, "comparate_file",
         choices = setNames(values$comparate_file,
                            basename(values$comparate_file)),
-        selected = values$comparate_file[df_row() + 1]
+        selected = values$comparate_file[metavalues$df_row + 1]
       )
     }
   })
@@ -183,40 +207,36 @@ server <- function(input, output, session) {
                 selected = values$comparate_file[1])
   })
 
-  df_row <- reactive({
-    which(values$comparate_file == input$comparate_file)
-  })
-
   comparate <- reactive({
-    req(df_row())
+    req(metavalues$df_row)
     input$comparate_file %>% mincGetVolume() %>% mincArray()
   })
 
   output$comparate_rating_voter <- renderUI({
-    req(df_row())
+    req(metavalues$df_row)
     numericInput(inputId = "comparate_rating",
                  label = "Rating",
-                 value = isolate(values$rating[df_row()]),
+                 value = isolate(values$rating[metavalues$df_row]),
                  min = 1, max = 5, step = 1)
   })
 
   output$comparate_note_entry <- renderUI({
-    req(df_row())
+    req(metavalues$df_row)
     textInput(inputId = "comparate_note",
               label = "Note",
-              value = isolate(values$note[df_row()]))
+              value = isolate(values$note[metavalues$df_row]))
   })
 
   output$comparate_range_slider <- renderUI({
-    req(df_row())
+    req(metavalues$df_row)
     sliderInput(
       inputId = "comparate_range",
       label = "Intensity Range",
-      min = 0,
-      max = values$max_intensity[df_row()],
+      min = values$min_intensity[metavalues$df_row],
+      max = values$max_intensity[metavalues$df_row],
       value = isolate(
-        c(values$lower_intensity_range[df_row()],
-          values$upper_intensity_range[df_row()])
+        c(values$lower_intensity_range[metavalues$df_row],
+          values$upper_intensity_range[metavalues$df_row])
       )
     )
   })
