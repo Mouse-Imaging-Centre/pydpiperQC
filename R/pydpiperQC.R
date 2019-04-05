@@ -16,3 +16,11 @@ launch <- function(annotation = NULL,
     launch.browser = TRUE
   )
 }
+
+#' @export
+launch_example <- function(data_dir) {
+  launch(
+    annotation = file.path(data_dir, "tidy_analysis.csv"),
+    consensus = file.path(data_dir, "example_nlin/example-nlin-3.mnc")
+  )
+}
