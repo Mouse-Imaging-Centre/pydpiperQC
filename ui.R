@@ -15,12 +15,12 @@ ui <- fluidPage(
            uiOutput("consensus_contour_slider"),
            checkboxInput(inputId = "show_consensus_histogram",
                          label = "Show Consensus Histogram",
-                         value = FALSE),
+                         value = TRUE),
            plotOutput("consensus_histogram", height="150px"),
            uiOutput("consensus_slice_range_slider"),
            checkboxInput(inputId = "show_slice_indicator",
                          label = "Show Slice Indicator",
-                         value = FALSE),
+                         value = TRUE),
            plotOutput("slice_indicator", height="100px")
 
            ,textOutput("vars")
@@ -40,7 +40,7 @@ ui <- fluidPage(
            uiOutput("comparate_range_slider"),
            checkboxInput(inputId = "show_comparate_histogram",
                          label = "Show Comparate Histogram",
-                         value = FALSE),
+                         value = TRUE),
            plotOutput("comparate_histogram", height="150px")
     )
   ),
