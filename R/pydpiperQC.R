@@ -21,6 +21,7 @@ launch <- function(annotation = NULL,
 launch_example <- function(data_dir) {
   launch(
     annotation = file.path(data_dir, "tidy_analysis.csv"),
-    consensus = file.path(data_dir, "example_nlin/example-nlin-3.mnc")
+    consensus = file.path(data_dir, "test_nlin/test-nlin-3.mnc"),
+    wd = data_dir
   )
 }
