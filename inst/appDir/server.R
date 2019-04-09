@@ -27,9 +27,16 @@ server <- function(input, output, session) {
 
   values <- reactiveValues()
   metavalues <- reactiveValues()
+  metavalues$annotation <- .GlobalEnv$.annotation
 
-  observeEvent(input$input_csv, {
-    metavalues$input_csv <- read_csv(input$input_csv$datapath)
+  observeEvent({
+    input$input_csv
+    metavalues$annotation
+  }, {
+    if(is.null(input$input_csv$datapath))
+      metavalues$input_csv <- read_csv(metavalues$annotation)
+    else
+      metavalues$input_csv <- read_csv(input$input_csv$datapath)
     metavalues$nrow <- nrow(metavalues$input_csv)
 
     maybe_initialize <- function(col, init) {
