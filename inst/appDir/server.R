@@ -14,20 +14,26 @@ server <- function(input, output, session) {
     }
   )
 
-  consensus <- reactive({
-    req(input$consensus_file)
-    input$consensus_file$datapath %>% mincGetVolume() %>% mincArray()
-  })
-  max_consensus <- reactive({
-    consensus() %>% max() %>% round()
-  })
-  dim_consensus <- reactive({
-    consensus() %>% dim()
-  })
 
   values <- reactiveValues()
   metavalues <- reactiveValues()
+
   metavalues$annotation <- .GlobalEnv$.annotation
+  metavalues$consensus_file <- .GlobalEnv$.consensus
+
+  observeEvent({
+    input$consensus_file
+    metavalues$consensus_file
+  }, {
+    if (is.null(input$consensus_file$datapath))
+      metavalues$consensus <- metavalues$consensus_file %>%
+        mincGetVolume() %>% mincArray()
+    else
+      metavalues$consensus <- input$consensus_file$datapath %>%
+        mincGetVolume() %>% mincArray()
+    metavalues$max_consensus <- metavalues$consensus %>% max() %>% round()
+    metavalues$dim_consensus <- metavalues$consensus %>% dim()
+  })
 
   observeEvent({
     input$input_csv
@@ -151,19 +157,19 @@ server <- function(input, output, session) {
   )
 
   output$consensus_range_slider <- renderUI({
-    req(max_consensus())
+    req(metavalues$max_consensus)
     sliderInput(inputId = "consensus_range",
                 label = "Intensity Range",
                 min = 0,
-                max = max_consensus(),
-                value = c( 0, max_consensus()))
+                max = metavalues$max_consensus,
+                value = c( 0, metavalues$max_consensus))
   })
   output$consensus_contour_slider <- renderUI({
-    req(max_consensus())
+    req(metavalues$max_consensus)
     sliderInput(inputId = "consensus_contour_level",
                 label = "Contour Level",
-                min = 0, max = max_consensus(),
-                value = max_consensus()/2)
+                min = 0, max = metavalues$max_consensus,
+                value = metavalues$max_consensus/2)
   })
 
   quick_hist <- function(x) {
@@ -181,16 +187,16 @@ server <- function(input, output, session) {
   }
   output$consensus_histogram <- renderPlot({
     if (input$show_consensus_histogram) {
-      consensus() %>% quick_hist()
+     metavalues$consensus %>% quick_hist()
     }
   })
 
   output$consensus_slice_range_slider <- renderUI({
-    req(dim_consensus())
+    req(metavalues$dim_consensus)
     sliderInput(inputId = "consensus_slice_range",
                 label = "Slices",
-                min = 0, max = dim_consensus()[2],
-                value = c(0.1, 0.9) * dim_consensus()[2])
+                min = 0, max = metavalues$dim_consensus[2],
+                value = c(0.1, 0.9) * metavalues$dim_consensus[2])
   })
   output$slice_indicator <- renderPlot({
     if (input$show_slice_indicator) {grid.newpage()
@@ -264,10 +270,10 @@ server <- function(input, output, session) {
     sliceSeries(nrow=4, ncol=1,
                 begin=input$consensus_slice_range[1],
                 end=input$consensus_slice_range[2]) %>%
-      anatomy(consensus(),
+      anatomy(metavalues$consensus,
               low = input$consensus_range[1],
               high = input$consensus_range[2]) %>%
-      contours(consensus(),
+      contours(metavalues$consensus,
                levels = input$consensus_contour_level,
                col="red") %>%
       addtitle("Consensus") %>%
@@ -278,7 +284,7 @@ server <- function(input, output, session) {
       anatomy(comparate(),
               low = input$comparate_range[1],
               high = input$comparate_range[2]) %>%
-      contours(consensus(),
+      contours(metavalues$consensus,
                levels = input$consensus_contour_level,
                col="red") %>%
       addtitle("Overlay") %>%
@@ -289,11 +295,11 @@ server <- function(input, output, session) {
       anatomy(comparate(),
               low = input$comparate_range[1],
               high = input$comparate_range[2]) %>%
-      contours(consensus(),
+      contours(metavalues$consensus,
                levels = input$consensus_contour_level,
                col="red") %>%
       addtitle("Comparate") %>%
-      anatomySliceIndicator(consensus(),
+      anatomySliceIndicator(metavalues$consensus,
                             low = input$consensus_range[1],
                             high = input$consensus_range[2])
   })
