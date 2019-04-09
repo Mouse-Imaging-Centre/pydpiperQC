@@ -23,7 +23,7 @@ ui <- fluidPage(
                          value = TRUE),
            plotOutput("slice_indicator", height="100px")
 
-           ,textOutput("vars")
+           # ,textOutput("vars")
     ),
 
     column(width=8,

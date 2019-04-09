@@ -1,4 +1,5 @@
 #'@importFrom magrittr %>%
+#'@importFrom readr read_csv
 
 #' @export
 launch <- function(annotation = NULL,
@@ -6,10 +7,12 @@ launch <- function(annotation = NULL,
                    wd=getwd()) {
 
   .GlobalEnv$.annotation <- annotation
+  if (!is.null(annotation))
+    .GlobalEnv$.annotation_dirname <- annotation %>% dirname()
   .GlobalEnv$.consensus <- consensus
   .GlobalEnv$.wd <- wd
 
-  on.exit(rm(list=c(.annotation, .consensus, .wd), envir=.GlobalEnv))
+  on.exit(rm(list=c(".annotation", ".consensus", ".wd"), envir=.GlobalEnv))
 
   shiny::runApp(
     appDir = system.file('appDir', package = 'pydpiperQC'),

@@ -29,7 +29,7 @@ server <- function(input, output, session) {
   metavalues <- reactiveValues()
 
   observeEvent(input$input_csv, {
-    metavalues$input_csv <- readr::read_csv(input$input_csv$datapath)
+    metavalues$input_csv <- read_csv(input$input_csv$datapath)
     metavalues$nrow <- nrow(metavalues$input_csv)
 
     maybe_initialize <- function(col, init) {
@@ -52,7 +52,8 @@ server <- function(input, output, session) {
   observeEvent(input$col_name, {
     req(metavalues$default_column)
     values$comparate_file <-
-      metavalues$input_csv[, input$col_name, drop=TRUE]
+      metavalues$input_csv[, input$col_name, drop=TRUE] %>%
+      absolutize_path
   })
 
   observeEvent(input$comparate_file, {

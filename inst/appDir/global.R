@@ -13,6 +13,13 @@
 #By default, Shiny limits fule uploads to 5MB per file. Let's allow 1GB.
 options(shiny.maxRequestSize=1024*1024^2)
 
+absolutize_path <- function(path) {
+  if (!is.null(.GlobalEnv$.annotation_dirname))
+    file.path(.GlobalEnv$.annotation_dirname, path)
+  else
+    file.path(.GlobalEnv$.wd, path)
+}
+
 js <- '
 var w_presses = 0;
 var s_presses = 0;
