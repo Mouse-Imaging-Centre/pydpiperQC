@@ -21,11 +21,15 @@ launch <- function(annotation = NULL,
 }
 
 #' @export
-launch_example <- function(data_dir=NULL) {
+launch_example <- function(data_dir = NULL, hpf = FALSE) {
 
   if (is.null(data_dir)){
-    data_dir <- tempdir()
-    download_example_data(data_dir)
+    if (hpf==TRUE)
+      data_dir <- "/hpf/largeprojects/MICe/nwang/2019-04-05_pydpiperQC_data"
+    else {
+      data_dir <- tempdir()
+      download_example_data(data_dir)
+    }
   }
   launch(
     annotation = file.path(data_dir, "tidy_analysis.csv"),
