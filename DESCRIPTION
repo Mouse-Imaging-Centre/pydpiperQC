@@ -10,10 +10,11 @@ Description: A shiny App for quality checking Pydpiper registrations.
 License: What license it uses
 Encoding: UTF-8
 LazyData: true
-Imports: 
+Imports:
+    readr,
+    magrittr,
     tibble,
-    readr
-Depends:
+    readr,
     purrr,
     tidyr,
     dplyr,
