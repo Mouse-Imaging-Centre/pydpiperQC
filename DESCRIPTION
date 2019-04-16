@@ -11,15 +11,14 @@ License: What license it uses
 Encoding: UTF-8
 LazyData: true
 Imports:
-    readr,
     magrittr,
+    shiny,
+    dplyr,
     tibble,
+    tidyr,
     readr,
     purrr,
-    tidyr,
-    dplyr,
     ggplot2,
-    shiny,
     RMINC,
     MRIcrotome,
     grid
