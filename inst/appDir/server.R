@@ -147,12 +147,10 @@ server <- function(input, output, session) {
   })
 
   output$values <- renderTable({
-    if (input$display_table) {
-      values %>%
-        reactiveValuesToList() %>%
-        tibble::as_tibble() %>%
-        mutate_if(is.character, basename)
-      }
+    values %>%
+      reactiveValuesToList() %>%
+      tibble::as_tibble() %>%
+      mutate_if(is.character, basename)
   },
   digits = 0, na=""
   )
