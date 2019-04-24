@@ -28,9 +28,6 @@ ui <- navbarPage(
       uiOutput("consensus_contour_slider"),
       plotOutput("consensus_histogram", height="150px"),
       uiOutput("consensus_slice_range_slider"),
-      checkboxInput(inputId = "show_slice_indicator",
-                    label = "Show Slice Indicator",
-                    value = TRUE),
       plotOutput("slice_indicator", height="100px")
 
       # ,textOutput("vars")

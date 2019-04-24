@@ -196,9 +196,9 @@ server <- function(input, output, session) {
                 value = c(0.1, 0.9) * metavalues$dim_consensus[2])
   })
   output$slice_indicator <- renderPlot({
-    if (input$show_slice_indicator) {grid.newpage()
-      #HACK!
-      plot_conductor()$ssl[[3]]$sliceIndicator %>% grid.draw()}
+    grid.newpage()
+    #HACK!
+    plot_conductor()$ssl[[3]]$sliceIndicator %>% grid.draw()
   })
 
   output$col_name_dropdown <- renderUI({
