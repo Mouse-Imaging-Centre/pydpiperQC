@@ -143,6 +143,7 @@ server <- function(input, output, session) {
   })
 
   output$vars <- renderPrint({
+    input$active_tab %>% str()
   })
 
   output$values <- renderTable({
@@ -273,9 +274,12 @@ server <- function(input, output, session) {
       anatomy(metavalues$consensus,
               low = input$consensus_range[1],
               high = input$consensus_range[2]) %>%
-      contours(metavalues$consensus,
-               levels = input$consensus_contour_level,
-               col="red") %>%
+              {if (input$active_tab == "Contours")
+                contours(.,
+                         metavalues$consensus,
+                         levels = input$consensus_contour_level,
+                         col="red")
+                else .} %>%
       addtitle("Consensus") %>%
       ####
       sliceSeries(nrow=4, ncol=1,
@@ -284,9 +288,12 @@ server <- function(input, output, session) {
       anatomy(comparate(),
               low = input$comparate_range[1],
               high = input$comparate_range[2]) %>%
-      contours(metavalues$consensus,
-               levels = input$consensus_contour_level,
-               col="red") %>%
+              {if (input$active_tab == "Contours")
+                contours(.,
+                         metavalues$consensus,
+                         levels = input$consensus_contour_level,
+                         col="red")
+                else .} %>%
       addtitle("Overlay") %>%
       ####
       sliceSeries(nrow=4, ncol=1,
@@ -295,9 +302,12 @@ server <- function(input, output, session) {
       anatomy(comparate(),
               low = input$comparate_range[1],
               high = input$comparate_range[2]) %>%
-      contours(metavalues$consensus,
-               levels = input$consensus_contour_level,
-               col="red") %>%
+              {if (input$active_tab == "Contours")
+                contours(.,
+                         metavalues$consensus,
+                         levels = input$consensus_contour_level,
+                         col="red")
+                else .} %>%
       addtitle("Comparate") %>%
       anatomySliceIndicator(metavalues$consensus,
                             low = input$consensus_range[1],

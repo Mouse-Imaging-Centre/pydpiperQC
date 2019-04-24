@@ -1,16 +1,28 @@
-ui <- fluidPage(
-  tags$script(js),
-  titlePanel("Pydpiper Quality Check"),
+ui <- navbarPage(
+  title = "Pydpiper Quality Check",
+  id = "active_tab",
 
-  fluidRow(
+
+  tabPanel(
+    title = "Files",
+    value = "Files",
+    tags$script(js),
+
+    h3("Annotation"),
+    fileInput("input_csv", label = NULL),
+    downloadButton("download_annotation", label = "Download"),
+
+    h3("Consensus"),
+    fileInput("consensus_file", label = NULL),
+
+    checkboxInput("display_table", "Display Annotations"),
+    tableOutput("values")
+  ),
+
+  tabPanel(
+    title = "Contours",
+    value = "Contours",
     column(width=2,
-
-           h3("Annotation"),
-           fileInput("input_csv", label = NULL),
-           downloadButton("download_annotation", label = "Download"),
-
-           h3("Consensus"),
-           fileInput("consensus_file", label = NULL),
            uiOutput("consensus_range_slider"),
            uiOutput("consensus_contour_slider"),
            checkboxInput(inputId = "show_consensus_histogram",
@@ -43,10 +55,7 @@ ui <- fluidPage(
                          value = TRUE),
            plotOutput("comparate_histogram", height="150px")
     )
-  ),
-
-  fluidRow(
-    checkboxInput("display_table", "Display Annotations"),
-    tableOutput("values")
+    # ,textOutput("vars")
   )
+
 )
