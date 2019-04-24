@@ -23,6 +23,7 @@ ui <- navbarPage(
     title = "Contours",
     value = "Contours",
     column(width=2,
+           h3("Consensus"),
            uiOutput("consensus_range_slider"),
            uiOutput("consensus_contour_slider"),
            checkboxInput(inputId = "show_consensus_histogram",
