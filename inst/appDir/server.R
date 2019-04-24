@@ -253,9 +253,7 @@ server <- function(input, output, session) {
   })
 
   output$comparate_histogram <- renderPlot({
-    if (input$show_comparate_histogram) {
       comparate() %>% quick_hist()
-      }
   })
 
   plot_conductor <- reactive({

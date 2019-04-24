@@ -47,9 +47,6 @@ ui <- navbarPage(
       uiOutput("comparate_rating_voter"),
       uiOutput("comparate_note_entry"),
       uiOutput("comparate_range_slider"),
-      checkboxInput(inputId = "show_comparate_histogram",
-                    label = "Show Comparate Histogram",
-                    value = TRUE),
       plotOutput("comparate_histogram", height="150px")
     )
     # ,textOutput("vars")
