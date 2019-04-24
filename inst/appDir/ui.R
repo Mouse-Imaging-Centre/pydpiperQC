@@ -8,20 +8,14 @@ ui <- navbarPage(
     value = "Files",
     tags$script(js),
 
-    column(
-      width=4,
-      h3("Annotation"),
-      fileInput("input_csv", label = NULL),
-      downloadButton("download_annotation", label = "Download"),
+    h3("Annotation"),
+    fileInput("input_csv", label = NULL),
+    downloadButton("download_annotation", label = "Download"),
 
-      h3("Consensus"),
-      fileInput("consensus_file", label = NULL)
-    ),
+    h3("Consensus"),
+    fileInput("consensus_file", label = NULL),
 
-    column(
-      width=8,
-      tableOutput("values")
-    )
+    tableOutput("values")
   ),
 
   tabPanel(
