@@ -185,9 +185,7 @@ server <- function(input, output, session) {
         axis.ticks.y = element_blank())
   }
   output$consensus_histogram <- renderPlot({
-    if (input$show_consensus_histogram) {
      metavalues$consensus %>% quick_hist()
-    }
   })
 
   output$consensus_slice_range_slider <- renderUI({
