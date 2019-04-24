@@ -27,6 +27,7 @@ ui <- navbarPage(
       uiOutput("consensus_range_slider"),
       uiOutput("consensus_contour_slider"),
       plotOutput("consensus_histogram", height="150px"),
+      br(),
       uiOutput("consensus_slice_range_slider"),
       plotOutput("slice_indicator", height="100px")
 
@@ -44,8 +45,10 @@ ui <- navbarPage(
       h3("Comparate"),
       uiOutput("col_name_dropdown"),
       uiOutput("comparate_file_dropdown"),
+      br(),
       uiOutput("comparate_rating_voter"),
       uiOutput("comparate_note_entry"),
+      br(),
       uiOutput("comparate_range_slider"),
       plotOutput("comparate_histogram", height="150px")
     )
