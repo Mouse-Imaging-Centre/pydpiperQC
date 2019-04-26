@@ -2,5 +2,3 @@
 
 export(launch)
 export(launch_example)
-importFrom(magrittr,"%>%")
-importFrom(readr,read_csv)
