@@ -1,11 +1,9 @@
 Package: pydpiperQC
 Title: Pydpiper Quality Check
 Version: 0.0.0.9000
-Authors@R: 
-    person(given = "Nick",
-           family = "Wang",
-           role = c("aut", "cre"),
-           email = "nick.wang@sickkids.ca")
+Authors@R: c(person("Nick", "Wang", role = c("aut", "cre"), email = "nick.wang@sickkids.ca"),
+             person("Chris", "Hammill", role = "ctb", email= "cfhammill@gmail.com")
+            )
 Description: A shiny App for quality checking Pydpiper registrations.
 License: What license it uses
 Encoding: UTF-8
