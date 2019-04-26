@@ -17,7 +17,7 @@ ui <- fluidPage(
                    choices = list(Contours = "contours", Alpha = "alpha"),
                    selected = "contours",
                    inline = TRUE),
-      uiOutput("consensus_contour_slider"),
+      uiOutput("consensus_contour_alpha_slider"),
       plotOutput("consensus_histogram", height="150px"),
       br(),
       uiOutput("consensus_slice_range_slider"),

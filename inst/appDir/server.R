@@ -162,12 +162,18 @@ server <- function(input, output, session) {
                 max = metavalues$max_consensus,
                 value = c( 0, metavalues$max_consensus))
   })
-  output$consensus_contour_slider <- renderUI({
+  output$consensus_contour_alpha_slider <- renderUI({
     req(metavalues$max_consensus)
-    sliderInput(inputId = "consensus_contour_level",
-                label = NULL,
-                min = 0, max = metavalues$max_consensus,
-                value = metavalues$max_consensus/2)
+    if (input$mode == "contours")
+      sliderInput(inputId = "consensus_contour_alpha",
+                  label = NULL,
+                  min = 0, max = metavalues$max_consensus,
+                  value = metavalues$max_consensus/2)
+    else if (input$mode == "alpha")
+      sliderInput(inputId = "consensus_contour_alpha",
+                  label = NULL,
+                  min = 0, max = 1,
+                  value = 0.5)
   })
 
   quick_hist <- function(x) {
@@ -258,7 +264,7 @@ server <- function(input, output, session) {
   plot_conductor <- reactive({
     req(input$consensus_range,
         input$comparate_range,
-        input$consensus_contour_level
+        input$consensus_contour_alpha
     )
 
     sliceSeries(nrow=4, ncol=1,
@@ -270,23 +276,34 @@ server <- function(input, output, session) {
               {if (input$mode == "contours")
                 contours(.,
                          metavalues$consensus,
-                         levels = input$consensus_contour_level,
+                         levels = input$consensus_contour_alpha,
                          col="red")
                 else .} %>%
       addtitle("Consensus") %>%
       ####
       sliceSeries(nrow=4, ncol=1,
                   begin=input$consensus_slice_range[1],
-                  end=input$consensus_slice_range[2]) %>%
-      anatomy(comparate(),
-              low = input$comparate_range[1],
-              high = input$comparate_range[2]) %>%
-              {if (input$mode == "contours")
-                contours(.,
-                         metavalues$consensus,
-                         levels = input$consensus_contour_level,
-                         col="red")
-                else .} %>%
+                  end=input$consensus_slice_range[2]) %>% {
+                    if (input$mode == "contours")
+                      anatomy(.,
+                              comparate(),
+                              low = input$comparate_range[1],
+                              high = input$comparate_range[2]) %>%
+                      contours(metavalues$consensus,
+                               levels = input$consensus_contour_alpha,
+                               col="red")
+                    else
+                      anatomy(.,
+                              metavalues$consensus,
+                              low = input$consensus_range[1],
+                              high = input$consensus_range[2],
+                              alpha = 1 - input$consensus_contour_alpha) %>%
+                      overlay(comparate(),
+                              low = input$comparate_range[1],
+                              high = input$comparate_range[2],
+                              alpha = input$consensus_contour_alpha,
+                              col = gray.colors(255, start = 0))} %>%
+
       addtitle("Overlay") %>%
       ####
       sliceSeries(nrow=4, ncol=1,
@@ -298,7 +315,7 @@ server <- function(input, output, session) {
               {if (input$mode == "contours")
                 contours(.,
                          metavalues$consensus,
-                         levels = input$consensus_contour_level,
+                         levels = input$consensus_contour_alpha,
                          col="red")
                 else .} %>%
       addtitle("Comparate") %>%
