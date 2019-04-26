@@ -2,3 +2,4 @@
 
 export(launch)
 export(launch_example)
+importFrom(magrittr,"%>%")

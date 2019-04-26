@@ -1,3 +1,5 @@
+#'@importFrom magrittr %>%
+NULL
 #' Launch the pydpiperQC application in an external browser
 #'
 #' @param annotation A path to an annotation file.
@@ -65,5 +67,3 @@ download_example_data <- function(data_path, method = "libcurl") {
 
   untar(downloadPath, exdir = data_path, compressed = "gzip")
 }
-
-#'@importFrom magrittr %>%
