@@ -143,7 +143,6 @@ server <- function(input, output, session) {
   })
 
   output$vars <- renderPrint({
-    input$active_tab %>% str()
   })
 
   output$values <- renderTable({
@@ -166,7 +165,7 @@ server <- function(input, output, session) {
   output$consensus_contour_slider <- renderUI({
     req(metavalues$max_consensus)
     sliderInput(inputId = "consensus_contour_level",
-                label = "Contour Level",
+                label = NULL,
                 min = 0, max = metavalues$max_consensus,
                 value = metavalues$max_consensus/2)
   })
@@ -268,7 +267,7 @@ server <- function(input, output, session) {
       anatomy(metavalues$consensus,
               low = input$consensus_range[1],
               high = input$consensus_range[2]) %>%
-              {if (input$active_tab == "Contours")
+              {if (input$mode == "contours")
                 contours(.,
                          metavalues$consensus,
                          levels = input$consensus_contour_level,
@@ -282,7 +281,7 @@ server <- function(input, output, session) {
       anatomy(comparate(),
               low = input$comparate_range[1],
               high = input$comparate_range[2]) %>%
-              {if (input$active_tab == "Contours")
+              {if (input$mode == "contours")
                 contours(.,
                          metavalues$consensus,
                          levels = input$consensus_contour_level,
@@ -296,7 +295,7 @@ server <- function(input, output, session) {
       anatomy(comparate(),
               low = input$comparate_range[1],
               high = input$comparate_range[2]) %>%
-              {if (input$active_tab == "Contours")
+              {if (input$mode == "contours")
                 contours(.,
                          metavalues$consensus,
                          levels = input$consensus_contour_level,

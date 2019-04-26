@@ -1,30 +1,22 @@
-ui <- navbarPage(
+ui <- fluidPage(
   title = "Pydpiper Quality Check",
-  id = "active_tab",
+  tags$script(js),
 
-
-  tabPanel(
-    title = "Files",
-    value = "Files",
-    tags$script(js),
-
-    h3("Annotation"),
-    fileInput("input_csv", label = NULL),
-    downloadButton("download_annotation", label = "Download"),
-
-    h3("Consensus"),
-    fileInput("consensus_file", label = NULL),
-
-    tableOutput("values")
-  ),
-
-  tabPanel(
-    title = "Contours",
-    value = "Contours",
+  fluidRow(
     column(
       width=2,
+
+      fileInput("input_csv", label = "Annotation"),
+      downloadButton("download_annotation", label = "Download"),
+
+
       h3("Consensus"),
+      fileInput("consensus_file", label = NULL),
       uiOutput("consensus_range_slider"),
+      radioButtons("mode", label = NULL,
+                   choices = list(Contours = "contours", Alpha = "alpha"),
+                   selected = "contours",
+                   inline = TRUE),
       uiOutput("consensus_contour_slider"),
       plotOutput("consensus_histogram", height="150px"),
       br(),
@@ -52,7 +44,9 @@ ui <- navbarPage(
       uiOutput("comparate_range_slider"),
       plotOutput("comparate_histogram", height="150px")
     )
-    # ,textOutput("vars")
+  ),
+  # ,textOutput("vars")
+  fluidRow(
+    tableOutput("values")
   )
-
 )
