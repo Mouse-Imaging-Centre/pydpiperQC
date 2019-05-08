@@ -29,10 +29,10 @@ $(document).on("keypress", function (e) {
 
   if (document.activeElement.id === "comparate_note") {
     if(e.which === 13){
-    comparate_note_enter_presses++;
-    Shiny.onInputChange("comparate_note_enter_press", comparate_note_enter_presses);
-    document.activeElement.blur();
-  }
+      comparate_note_enter_presses++;
+      Shiny.onInputChange("comparate_note_enter_press", comparate_note_enter_presses);
+      document.activeElement.blur();
+    }
   }
 
   if (document.activeElement.id === "comparate_note") {return}
