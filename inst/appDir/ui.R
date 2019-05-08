@@ -6,7 +6,8 @@ ui <- fluidPage(
     column(
       width=2,
 
-      fileInput("input_csv", label = "Annotation"),
+      h3("Annotation"),
+      fileInput("input_csv", label = NULL),
       downloadButton("download_annotation", label = "Download"),
 
 
