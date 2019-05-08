@@ -7,12 +7,20 @@ ui <- fluidPage(
       width=2,
 
       h3("Annotation"),
-      fileInput("input_csv", label = NULL),
+      fileInput("input_csv", label = NULL,
+                placeholder = if_else(is.null(.GlobalEnv$.annotation),
+                                "No file selected",
+                                basename(.GlobalEnv$.annotation)
+                )),
       downloadButton("download_annotation", label = "Download"),
 
 
       h3("Consensus"),
-      fileInput("consensus_file", label = NULL),
+      fileInput("consensus_file", label = NULL,
+                placeholder = if_else(is.null(.GlobalEnv$.consensus),
+                                      "No file selected",
+                                      basename(.GlobalEnv$.consensus)
+                )),
       uiOutput("consensus_range_slider"),
       radioButtons("mode", label = NULL,
                    choices = list(Contours = "contours", Alpha = "alpha"),
