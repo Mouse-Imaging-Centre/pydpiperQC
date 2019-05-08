@@ -5,7 +5,7 @@ Authors@R: c(person("Nick", "Wang", role = c("aut", "cre"), email = "nick.wang@s
              person("Chris", "Hammill", role = "ctb", email= "cfhammill@gmail.com")
             )
 Description: A shiny App for quality checking Pydpiper registrations.
-License: What license it uses
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
