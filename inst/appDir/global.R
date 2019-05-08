@@ -18,11 +18,16 @@ absolutize_path <- function(path) {
     file.path(.GlobalEnv$.wd, path)
 }
 
+# This one depends on the shiny's fileInput tree structure.
+# document.querySelector("#consensus_file").parentNode.parentNode.parentNode.querySelector("input[placeholder='No file selected']")["placeholder"] = "From Command Line"
+# This one depends on the app's order.
+# document.querySelectorAll("input[placeholder='No file selected']")[0]["placeholder"] = "From Command Line"
+
 js <- '
 var w_presses = 0;
 var s_presses = 0;
 var comparate_note_enter_presses = 0;
-
+css
 $(document).on("keypress", function (e) {
   console.log(e.which);
   console.log(document.activeElement);
