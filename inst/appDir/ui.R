@@ -48,6 +48,6 @@ ui <- fluidPage(
   ),
   # ,textOutput("vars")
   fluidRow(
-    tableOutput("values")
+    tableOutput("df")
   )
 )
