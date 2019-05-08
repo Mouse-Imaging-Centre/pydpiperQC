@@ -1,6 +1,6 @@
 Package: pydpiperQC
 Title: Pydpiper Quality Check
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: c(person("Nick", "Wang", role = c("aut", "cre"), email = "nick.wang@sickkids.ca"),
              person("Chris", "Hammill", role = "ctb", email= "cfhammill@gmail.com")
             )
