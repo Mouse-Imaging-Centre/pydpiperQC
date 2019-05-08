@@ -1,5 +1,6 @@
 #'@importFrom magrittr %>%
 NULL
+
 #' Launch the pydpiperQC application in an external browser
 #'
 #' @param annotation A path to an annotation file.
