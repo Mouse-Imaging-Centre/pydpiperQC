@@ -40,11 +40,13 @@ $(document).on("keypress", function (e) {
   if(e.which === 119){
     w_presses++;
     Shiny.onInputChange("w_press", w_presses);
+    Shiny.onInputChange("key_rating", null);
   }
 
   if(e.which === 115){
     s_presses++;
     Shiny.onInputChange("s_press", s_presses);
+    Shiny.onInputChange("key_rating", null);
   }
 
   if(e.which === 49){
